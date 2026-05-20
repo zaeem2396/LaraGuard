@@ -2,31 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
+
+## [0.1.0] - 2026-05-20
+
+First public release: architectural linting for Laravel via `php artisan guard`.
 
 ### Added
 
-- `ScanOutcome` from the scanner with diagnostic violations for missing scan roots and parse failures.
-- Per-class `FatClassRule` analysis using `max_method_count` and `max_public_method_count`.
-- Expanded `NoDbInControllerRule` for `DB` facade and Eloquent-style static calls in controllers (`error` severity).
-- `MissingInterfaceBindingRule` for concrete `App\` constructor types in Services and Repositories.
-- Test fixtures under `tests/fixtures/violations` and Pest coverage for rules, scanner diagnostics, and `--fail-on-error`.
-- Documentation: [rules.md](docs/rules.md), [ci.md](docs/ci.md).
+- Laravel package with auto-discovered `GuardServiceProvider` and publishable `config/guard.php`.
+- `php artisan guard` with human output (Errors / Warnings / Info) and `--format=json`.
+- `--fail-on-error` exit codes driven by `severity.fail_on` (default: **error**).
+- AST scanning with `nikic/php-parser` and `ScanOutcome` (parsed files + scanner diagnostics).
+- Scanner warnings for missing scan roots and unparseable PHP files.
+- Rule engine: `RuleContract`, `RuleRegistry`, and `Violation` model with severity levels.
+- **no-db-in-controller** — flags `DB` facade and Eloquent static usage in HTTP controllers (**error**).
+- **fat-class** — per-class method and public-method thresholds from config.
+- **missing-interface-binding** — concrete `App\` constructor dependencies in Services/Repositories.
+- Pest + Orchestra Testbench suite with violation fixtures under `tests/fixtures/violations`.
+- GitHub Actions: Pint, PHPStan (Larastan), Pest matrix (PHP 8.3–8.5, Laravel 11–13), Composer audit, prefer-lowest.
+- Documentation: [README](README.md), [installation](docs/installation.md), [rules](docs/rules.md), [CI](docs/ci.md), [contributing](docs/contributing.md).
 
 ### Changed
 
-- `ScannerContract::scan()` returns `ScanOutcome` (files + diagnostics) instead of a bare file list.
-- `NoDbInControllerRule` violations use `Severity::Error` so `--fail-on-error` fails CI when triggered.
-- README and installation docs updated for bundled rules, severity, and CI behavior.
+- `ScannerContract::scan()` returns `ScanOutcome` instead of a bare file list.
+
+### Requirements
+
+- PHP ^8.3
+- Laravel 11, 12, or 13 (Illuminate Console, Contracts, Support)
 
 ### Known limitations
 
-- Eloquent calls via imported short class names (without FQCN in the AST) are not detected yet.
-- No Packagist release or semver tag for v0.1.0 yet.
-- No SARIF, baselines, `.guardignore`, or layer rules (see roadmap).
+- Eloquent calls through imported short class names (e.g. `User::` without FQCN) are not detected yet.
+- No `.guardignore`, SARIF output, baselines, or layer rules (planned for later releases).
+- Install from VCS until Packagist publication (see [installation](docs/installation.md)).
 
-## [0.1.0] — TBD
-
-Initial architectural guard foundation: `php artisan guard`, config, bundled rules, and package CI.
+[0.1.0]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.0
