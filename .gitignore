@@ -11,3 +11,4 @@ phpstan-tmp.neon
 .DS_Store
 *.swp
 *.swo
+/docs/roadmap.md
