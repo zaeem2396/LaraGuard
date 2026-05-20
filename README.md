@@ -26,7 +26,7 @@ php artisan vendor:publish --tag=guard-config
 php artisan guard
 ```
 
-By default, Guard scans the `app` directory (configurable) and applies the bundled placeholder rules. Tighten CI pipelines with:
+By default, Guard scans the `app` directory (configurable) and applies the bundled rules. Controller database usage is reported as **errors** so CI can fail when you run:
 
 ```bash
 php artisan guard --fail-on-error
