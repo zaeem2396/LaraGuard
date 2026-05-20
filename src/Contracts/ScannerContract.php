@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace LaravelGuard\Guard\Contracts;
 
-use LaravelGuard\Guard\Support\ScanFile;
+use LaravelGuard\Guard\Support\ScanOutcome;
 
 interface ScannerContract
 {
-    /**
-     * @return list<ScanFile>
-     */
-    public function scan(): array;
+    public function scan(): ScanOutcome;
 }

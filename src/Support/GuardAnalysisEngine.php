@@ -19,9 +19,10 @@ final readonly class GuardAnalysisEngine
      */
     public function run(): array
     {
-        $violations = [];
+        $outcome = $this->scanner->scan();
+        $violations = $outcome->diagnostics;
 
-        foreach ($this->scanner->scan() as $file) {
+        foreach ($outcome->files as $file) {
             foreach ($this->rules->all() as $rule) {
                 foreach ($rule->evaluate($file) as $violation) {
                     $violations[] = $violation;

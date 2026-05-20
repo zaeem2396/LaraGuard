@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Artisan;
 
-it('runs the guard command with a successful exit code', function (): void {
+it('runs the guard command with a successful exit code when not failing on errors', function (): void {
     expect(Artisan::call('guard', [
         '--format' => 'txt',
     ]))->toBe(0);
@@ -18,11 +18,12 @@ it('emits valid json when requested', function (): void {
     $decoded = json_decode(trim((string) Artisan::output()), true, 512, JSON_THROW_ON_ERROR);
 
     expect($decoded)->toHaveKeys(['errors', 'warnings', 'info', 'summary']);
+    expect($decoded['errors'])->not->toBeEmpty();
 });
 
-it('can fail when architectural errors are present and the flag is provided', function (): void {
+it('fails with a non-zero exit code when errors exist and fail-on-error is enabled', function (): void {
     expect(Artisan::call('guard', [
         '--format' => 'json',
         '--fail-on-error' => true,
-    ]))->toBe(0);
+    ]))->toBe(1);
 });
