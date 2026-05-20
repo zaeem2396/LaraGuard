@@ -1,0 +1,13 @@
+/.idea
+/.vscode
+/.phpunit.cache
+/.phpstan
+/build
+/coverage
+/vendor
+composer.lock
+.phpunit.result.cache
+phpstan-tmp.neon
+.DS_Store
+*.swp
+*.swo
