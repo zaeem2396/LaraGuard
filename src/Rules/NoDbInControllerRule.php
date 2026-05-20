@@ -9,6 +9,7 @@ use LaravelGuard\Guard\Support\ScanFile;
 use LaravelGuard\Guard\Violations\Severity;
 use LaravelGuard\Guard\Violations\Violation;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\NodeFinder;
 
@@ -26,33 +27,85 @@ final readonly class NoDbInControllerRule implements RuleContract
         }
 
         $finder = new NodeFinder;
+        $violations = [];
 
         foreach ($finder->findInstanceOf($file->statements, StaticCall::class) as $call) {
-            if (! $call instanceof StaticCall || ! $call->class instanceof Name) {
+            if (! $call instanceof StaticCall) {
                 continue;
             }
 
-            $fqcn = $call->class->toString();
-            $isDbFacade = $fqcn === 'DB'
-                || $fqcn === 'Illuminate\\Support\\Facades\\DB';
+            $reason = $this->describeStaticCallViolation($call);
 
-            if (! $isDbFacade) {
+            if ($reason === null) {
                 continue;
             }
 
-            return [
-                new Violation(
-                    severity: Severity::Warning,
-                    file: $file->relativePath,
-                    line: $call->getStartLine(),
-                    message: 'Database facades should not be used directly inside HTTP controllers.',
-                    suggestion: 'Move queries behind Actions, Services, or Repositories and inject dependencies instead.',
-                    ruleId: $this->id(),
-                ),
-            ];
+            $violations[] = new Violation(
+                severity: Severity::Error,
+                file: $file->relativePath,
+                line: $call->getStartLine(),
+                message: $reason,
+                suggestion: 'Move persistence behind Actions, Services, or Repositories and inject abstractions.',
+                ruleId: $this->id(),
+            );
         }
 
-        return [];
+        return $violations;
+    }
+
+    private function describeStaticCallViolation(StaticCall $call): ?string
+    {
+        if (! $call->class instanceof Name) {
+            return null;
+        }
+
+        $fqcn = $call->class->toString();
+
+        if ($this->isDbFacade($fqcn)) {
+            return 'Database facades should not be used directly inside HTTP controllers.';
+        }
+
+        if ($this->isLikelyEloquentModelReference($fqcn) && $this->isEloquentQueryMethod($this->methodName($call))) {
+            return 'Eloquent models should not be queried directly inside HTTP controllers.';
+        }
+
+        return null;
+    }
+
+    private function isDbFacade(string $name): bool
+    {
+        $normalized = ltrim($name, '\\');
+
+        return $normalized === 'DB'
+            || $normalized === 'Illuminate\\Support\\Facades\\DB';
+    }
+
+    private function isLikelyEloquentModelReference(string $name): bool
+    {
+        $normalized = ltrim($name, '\\');
+
+        if (str_contains($normalized, '\\Models\\')) {
+            return true;
+        }
+
+        return str_ends_with($normalized, 'Model');
+    }
+
+    private function isEloquentQueryMethod(string $method): bool
+    {
+        return in_array($method, [
+            'query', 'find', 'findOrFail', 'where', 'create', 'updateOrCreate',
+            'first', 'firstOrFail', 'all', 'get', 'pluck', 'count', 'exists',
+        ], true);
+    }
+
+    private function methodName(StaticCall $call): string
+    {
+        if ($call->name instanceof Identifier) {
+            return $call->name->toString();
+        }
+
+        return '';
     }
 
     private function isLikelyControllerPath(string $relativePath): bool
