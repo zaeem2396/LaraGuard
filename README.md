@@ -8,10 +8,11 @@
 
 ## Highlights
 
-- **Zero-config by default** with a publishable `config/guard.php`
-- **Extensible rules** implementing `LaravelGuard\Guard\Contracts\RuleContract`
-- **CI friendly** output, JSON mode, and explicit exit codes behind `--fail-on-error`
-- **Future-proof seams** for caching, custom rules, SARIF, baselines, and deeper graphs
+- **Zero-config by default** — scans `app/` with sensible ignores after install
+- **Bundled rules** for controllers, class size, and constructor bindings
+- **CI friendly** — JSON output and non-zero exits via `--fail-on-error`
+- **Extensible** — implement `RuleContract` and register classes in config
+- **Future-proof seams** for caching, SARIF, baselines, and dependency graphs
 
 ## Requirements
 
@@ -22,47 +23,63 @@
 
 ```bash
 composer require laravel-guard/laravel-guard
-php artisan vendor:publish --tag=guard-config
 php artisan guard
 ```
 
-By default, Guard scans the `app` directory (configurable) and applies the bundled rules. Controller database usage is reported as **errors** so CI can fail when you run:
+Optional: publish and customize configuration.
+
+```bash
+php artisan vendor:publish --tag=guard-config
+```
+
+Fail CI when **error**-level violations are found (including database usage in controllers):
 
 ```bash
 php artisan guard --fail-on-error
 ```
 
-Structured automation output:
+Machine-readable output:
 
 ```bash
 php artisan guard --format=json
 ```
 
+## Bundled rules (summary)
+
+| Rule | Severity | Purpose |
+| ---- | -------- | ------- |
+| `no-db-in-controller` | error | No `DB` facade or Eloquent static queries in HTTP controllers |
+| `fat-class` | info | Classes over configured method / public-method limits |
+| `missing-interface-binding` | info | Concrete `App\` constructor types in Services / Repositories |
+
+See [docs/rules.md](docs/rules.md) for behavior, limits, and configuration.
+
 ## Configuration
 
 Publish `config/guard.php` and adjust:
 
-- **`rules`**: list of rule classes to execute (swap or append your own)
-- **`paths`**: relative folders to scan (defaults to `app`)
-- **`ignore`**: path prefixes skipped before parsing
-- **`thresholds`**: per-rule tuning (for example `fat_class.max_method_count`)
-- **`severity`**: `report_from` filters console noise; `fail_on` pairs with `--fail-on-error`
+- **`rules`** — rule class FQCNs to run
+- **`paths`** — directories to scan (default: `app`)
+- **`ignore`** — path prefixes to skip
+- **`thresholds`** — per-rule limits (e.g. `fat_class.max_method_count`)
+- **`severity`** — `report_from` and `fail_on` for output and exit codes
 
-## Architecture (overview)
+## Architecture
 
-| Layer        | Responsibility |
-| ------------ | -------------- |
-| **Scanner**  | Recursively collects PHP files and parses them to AST nodes |
-| **Rules**    | Inspect each `ScanFile` and emit `Violation` objects |
-| **Engine**   | Orchestrates scanning + rule execution |
-| **Renderer** | Formats human or JSON output with clear severity sections |
+| Layer | Responsibility |
+| ----- | -------------- |
+| **Scanner** | Walks configured paths, parses PHP to AST, emits scan diagnostics |
+| **Rules** | Inspect each `ScanFile` and return `Violation` instances |
+| **Engine** | Merges scanner diagnostics with rule results |
+| **Renderer** | Human (Errors / Warnings / Info) or JSON output |
 
-Design goals: keep classes small, lean on containers for resolution, and avoid regex-based “parsing”.
+Design goals: small classes, container-driven wiring, no regex-based PHP parsing.
 
 ## Documentation
 
 - [Installation](docs/installation.md)
-- [Usage & CI snippets](docs/installation.md#usage)
+- [Rules reference](docs/rules.md)
+- [CI integration](docs/ci.md)
 - [Contributing](docs/contributing.md)
 
 ## License
