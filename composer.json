@@ -1,0 +1,64 @@
+{
+    "name": "laravel-guard/laravel-guard",
+    "description": "Architectural linting and structure enforcement for Laravel applications.",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "architecture",
+        "lint",
+        "static-analysis",
+        "guard"
+    ],
+    "authors": [
+        {
+            "name": "Laravel Guard Contributors"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "nikic/php-parser": "^5.0",
+        "illuminate/console": "^11.0|^12.0",
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.18",
+        "nunomaduro/larastan": "^3.0",
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^3.0",
+        "phpstan/phpstan": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "LaravelGuard\\Guard\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaravelGuard\\Guard\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaravelGuard\\Guard\\GuardServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "lint": "pint",
+        "analyse": "phpstan analyse --memory-limit=512M",
+        "test": "pest",
+        "security-audit": "composer audit",
+        "validate-package": "composer validate --strict"
+    }
+}
