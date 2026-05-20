@@ -59,6 +59,13 @@
         "analyse": "phpstan analyse --memory-limit=512M",
         "test": "pest",
         "security-audit": "composer audit",
-        "validate-package": "composer validate --strict"
+        "validate-package": "composer validate --strict",
+        "pre-push": [
+            "@lint",
+            "@analyse",
+            "@test",
+            "@security-audit",
+            "@validate-package"
+        ]
     }
 }
