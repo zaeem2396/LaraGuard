@@ -19,7 +19,7 @@ This copies `config/guard.php` where you can enable/disable rules, tweak paths, 
 ## Requirements
 
 - PHP `^8.3`
-- Laravel `11.x` / `12.x` (Illuminate Console, Contracts, and Support components)
+- Laravel `11.x` / `12.x` / `13.x` (Illuminate Console, Contracts, and Support components)
 
 ## Usage
 

@@ -16,7 +16,7 @@
 ## Requirements
 
 - PHP **8.3+**
-- Laravel **11+** / **12+** (Illuminate components `^11|^12`)
+- Laravel **11+** / **12+** / **13+** (Illuminate components `^11|^12|^13`)
 
 ## Quick start
 
