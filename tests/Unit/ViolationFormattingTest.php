@@ -34,7 +34,7 @@ it('serializes violations for json consumers', function (): void {
             suggestion: 'Resolve the warning',
             ruleId: 'example',
         ),
-    ]);
+    ], 3);
 
     expect($payload['warnings'][0])->toMatchArray([
         'severity' => Severity::Warning->value,
