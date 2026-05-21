@@ -42,7 +42,7 @@ final class ImportAliasMap
             }
 
             if ($statement instanceof Namespace_ && $statement->stmts !== null) {
-                self::collectFromStatementList($statement->stmts, $map);
+                self::collectFromStatementList(array_values($statement->stmts), $map);
             }
         }
     }
