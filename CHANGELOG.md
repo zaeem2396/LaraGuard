@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - Unreleased
+
+### Added
+
+- `ImportAliasMap` helper to resolve `use` statement aliases when analyzing AST nodes.
+
+### Fixed
+
+- **no-db-in-controller** now flags Eloquent static calls on imported short class names (e.g. `User::where()` with `use App\Models\User`).
+- **missing-interface-binding** resolves imported short constructor types (e.g. `OrderRepository` → `App\Repositories\OrderRepository`).
+
 ## [0.1.0] - 2026-05-20
 
 First public release: architectural linting for Laravel via `php artisan guard`.
@@ -37,7 +48,6 @@ First public release: architectural linting for Laravel via `php artisan guard`.
 
 ### Known limitations
 
-- Eloquent calls through imported short class names (e.g. `User::` without FQCN) are not detected yet.
 - No `.guardignore`, SARIF output, baselines, or layer rules (planned for later releases).
 - Install from VCS until Packagist publication (see [installation](docs/installation.md)).
 
