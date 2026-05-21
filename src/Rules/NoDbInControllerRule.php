@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaravelGuard\Guard\Rules;
 
 use LaravelGuard\Guard\Contracts\RuleContract;
+use LaravelGuard\Guard\Support\ImportAliasMap;
 use LaravelGuard\Guard\Support\ScanFile;
 use LaravelGuard\Guard\Violations\Severity;
 use LaravelGuard\Guard\Violations\Violation;
@@ -26,6 +27,7 @@ final readonly class NoDbInControllerRule implements RuleContract
             return [];
         }
 
+        $importMap = ImportAliasMap::fromStatements($file->statements);
         $finder = new NodeFinder;
         $violations = [];
 
@@ -34,7 +36,7 @@ final readonly class NoDbInControllerRule implements RuleContract
                 continue;
             }
 
-            $reason = $this->describeStaticCallViolation($call);
+            $reason = $this->describeStaticCallViolation($call, $importMap);
 
             if ($reason === null) {
                 continue;
@@ -53,19 +55,22 @@ final readonly class NoDbInControllerRule implements RuleContract
         return $violations;
     }
 
-    private function describeStaticCallViolation(StaticCall $call): ?string
+    /**
+     * @param  array<string, string>  $importMap
+     */
+    private function describeStaticCallViolation(StaticCall $call, array $importMap): ?string
     {
         if (! $call->class instanceof Name) {
             return null;
         }
 
-        $fqcn = $call->class->toString();
+        $resolved = ImportAliasMap::resolveName($call->class, $importMap);
 
-        if ($this->isDbFacade($fqcn)) {
+        if ($this->isDbFacade($resolved)) {
             return 'Database facades should not be used directly inside HTTP controllers.';
         }
 
-        if ($this->isLikelyEloquentModelReference($fqcn) && $this->isEloquentQueryMethod($this->methodName($call))) {
+        if ($this->isLikelyEloquentModelReference($resolved) && $this->isEloquentQueryMethod($this->methodName($call))) {
             return 'Eloquent models should not be queried directly inside HTTP controllers.';
         }
 

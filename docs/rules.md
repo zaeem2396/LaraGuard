@@ -21,11 +21,7 @@ The scanner may also emit diagnostics with rule id `scanner` (e.g. missing scan 
 **Detects (in controller paths):**
 
 - `DB::…` static calls (including `Illuminate\Support\Facades\DB`)
-- Eloquent-style static calls on types under `*\Models\*` or names ending in `Model` (e.g. `User::query()`, `User::where()`)
-
-**Does not yet detect:**
-
-- Short class names that rely on `use App\Models\User` imports without an FQCN in the AST
+- Eloquent-style static calls on models, including via `use` imports (e.g. `use App\Models\User` then `User::where()`)
 
 **CI:** Because violations are **errors**, `php artisan guard --fail-on-error` exits with code `1` when this rule fires.
 
@@ -59,11 +55,10 @@ Line-count thresholds are not implemented yet.
 **Detects:**
 
 - Concrete constructor parameter types under `app/Services` and `app/Repositories` (path segments `Services/`, `Repositories/`)
-- Types must resolve to an `App\…` class name (FQCN in source)
+- Resolves `use` imports so short type names (e.g. `OrderRepository`) map to `App\…` classes
 
 **Does not yet detect:**
 
-- Parameters typed with imported short names only
 - Whether a matching interface is already bound in a service provider
 
 ## Severity and CI
