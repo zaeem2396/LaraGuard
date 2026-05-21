@@ -6,7 +6,7 @@
 
 **Laravel Guard** is a lightweight architectural linting toolkit for Laravel applications. It combines an AST-first scanner (via [`nikic/php-parser`](https://github.com/nikic/PHP-Parser)), a small rule engine, and a CLI experience that feels familiar if you already use Laravel Pint or PHPUnit.
 
-**Latest release:** [v0.1.1](https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.1) — import-aware rule resolution for controllers and services.
+**Latest release:** [v0.1.2](https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.2) — line-count thresholds, controller path excludes, and scan statistics.
 
 ## Highlights
 
@@ -44,6 +44,7 @@ Machine-readable output:
 
 ```bash
 php artisan guard --format=json
+php artisan guard --stats
 ```
 
 ## Bundled rules (summary)
@@ -51,7 +52,7 @@ php artisan guard --format=json
 | Rule | Severity | Purpose |
 | ---- | -------- | ------- |
 | `no-db-in-controller` | error | No `DB` facade or Eloquent static queries in HTTP controllers |
-| `fat-class` | info | Classes over configured method / public-method limits |
+| `fat-class` | info | Classes over method, public-method, or line-span limits |
 | `missing-interface-binding` | info | Concrete `App\` constructor types in Services / Repositories |
 
 See [docs/rules.md](docs/rules.md) for behavior, limits, and configuration.
@@ -63,7 +64,8 @@ Publish `config/guard.php` and adjust:
 - **`rules`** — rule class FQCNs to run
 - **`paths`** — directories to scan (default: `app`)
 - **`ignore`** — path prefixes to skip
-- **`thresholds`** — per-rule limits (e.g. `fat_class.max_method_count`)
+- **`thresholds`** — per-rule limits (e.g. `fat_class.max_line_count`)
+- **`no_db_in_controller`** — optional controller path prefixes to exclude from DB checks
 - **`severity`** — `report_from` and `fail_on` for output and exit codes
 
 ## Architecture

@@ -47,6 +47,7 @@ This copies `config/guard.php` where you can:
 php artisan guard
 php artisan guard --format=json
 php artisan guard --fail-on-error
+php artisan guard --stats
 ```
 
 ### CI integration
@@ -125,7 +126,7 @@ These appear in the same CLI sections and JSON payload as rule output.
 Install a specific release from GitHub:
 
 ```bash
-composer require laravel-guard/laravel-guard:v0.1.1
+composer require laravel-guard/laravel-guard:v0.1.2
 ```
 
 See [releases](https://github.com/zaeem2396/LaraGuard/releases) for changelog notes.

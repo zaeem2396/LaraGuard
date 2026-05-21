@@ -9,7 +9,7 @@ Enable or disable rules by editing the `rules` array in `config/guard.php`.
 | Rule ID | Class | Default severity | What it checks |
 | ------- | ----- | ---------------- | -------------- |
 | `no-db-in-controller` | `NoDbInControllerRule` | **error** | Database access inside `Http/Controllers` |
-| `fat-class` | `FatClassRule` | **info** | Classes exceeding configured method counts |
+| `fat-class` | `FatClassRule` | **info** | Classes exceeding method, public-method, or line-span thresholds |
 | `missing-interface-binding` | `MissingInterfaceBindingRule` | **info** | Concrete `App\` types in constructors under Services/Repositories |
 
 The scanner may also emit diagnostics with rule id `scanner` (e.g. missing scan roots, unparseable PHP files). Those use **warning** severity.
