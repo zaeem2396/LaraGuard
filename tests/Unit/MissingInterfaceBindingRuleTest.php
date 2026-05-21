@@ -8,14 +8,15 @@ use LaravelGuard\Guard\Support\GuardAnalysisEngine;
 it('suggests interfaces for concrete constructor dependencies in services', function (): void {
     $violations = app(GuardAnalysisEngine::class)->run()->violations;
 
-    $bindingViolations = array_values(array_filter(
+    $orderServiceViolations = array_values(array_filter(
         $violations,
-        static fn ($v) => $v->ruleId === app(MissingInterfaceBindingRule::class)->id(),
+        static fn ($v) => $v->ruleId === app(MissingInterfaceBindingRule::class)->id()
+            && str_contains($v->file, 'OrderService.php')
+            && ! str_contains($v->file, 'PromotedOrderService.php'),
     ));
 
-    expect($bindingViolations)->not->toBeEmpty();
-    expect($bindingViolations[0]->file)->toContain('Services/OrderService.php');
-    expect($bindingViolations[0]->message)->toContain('OrderRepository');
+    expect($orderServiceViolations)->not->toBeEmpty();
+    expect($orderServiceViolations[0]->message)->toContain('OrderRepository');
 });
 
 it('flags concrete types on promoted readonly constructor properties', function (): void {
