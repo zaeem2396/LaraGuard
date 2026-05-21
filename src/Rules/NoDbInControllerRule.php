@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaravelGuard\Guard\Rules;
 
+use LaravelGuard\Guard\Config\GuardConfig;
 use LaravelGuard\Guard\Contracts\RuleContract;
 use LaravelGuard\Guard\Support\ImportAliasMap;
 use LaravelGuard\Guard\Support\ScanFile;
@@ -16,6 +17,10 @@ use PhpParser\NodeFinder;
 
 final readonly class NoDbInControllerRule implements RuleContract
 {
+    public function __construct(
+        private GuardConfig $config,
+    ) {}
+
     public function id(): string
     {
         return 'no-db-in-controller';
@@ -24,6 +29,10 @@ final readonly class NoDbInControllerRule implements RuleContract
     public function evaluate(ScanFile $file): array
     {
         if (! $this->isLikelyControllerPath($file->relativePath)) {
+            return [];
+        }
+
+        if ($this->isExcludedControllerPath($file->relativePath)) {
             return [];
         }
 
@@ -118,5 +127,20 @@ final readonly class NoDbInControllerRule implements RuleContract
         $normalized = str_replace('\\', '/', $relativePath);
 
         return str_contains($normalized, 'Http/Controllers');
+    }
+
+    private function isExcludedControllerPath(string $relativePath): bool
+    {
+        $normalized = str_replace('\\', '/', $relativePath);
+
+        foreach ($this->config->noDbControllerExcludePrefixes as $prefix) {
+            $normalizedPrefix = str_replace('\\', '/', $prefix);
+
+            if ($normalizedPrefix !== '' && str_starts_with($normalized, $normalizedPrefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
