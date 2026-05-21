@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace LaravelGuard\Guard\Support;
 
 use LaravelGuard\Guard\Contracts\ScannerContract;
-use LaravelGuard\Guard\Violations\Violation;
 
 final readonly class GuardAnalysisEngine
 {
@@ -14,10 +13,7 @@ final readonly class GuardAnalysisEngine
         private RuleRegistry $rules,
     ) {}
 
-    /**
-     * @return list<Violation>
-     */
-    public function run(): array
+    public function run(): AnalysisResult
     {
         $outcome = $this->scanner->scan();
         $violations = $outcome->diagnostics;
@@ -30,6 +26,9 @@ final readonly class GuardAnalysisEngine
             }
         }
 
-        return $violations;
+        return new AnalysisResult(
+            violations: $violations,
+            filesScanned: count($outcome->files),
+        );
     }
 }

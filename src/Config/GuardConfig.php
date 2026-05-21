@@ -14,6 +14,7 @@ final class GuardConfig
      * @param  list<string>  $ignorePrefixes
      * @param  array<string, mixed>  $thresholds
      * @param  list<string>  $scanRoots
+     * @param  list<string>  $noDbControllerExcludePrefixes
      */
     public function __construct(
         public array $rules,
@@ -22,6 +23,7 @@ final class GuardConfig
         public Severity $reportFrom,
         public Severity $failOn,
         public array $scanRoots,
+        public array $noDbControllerExcludePrefixes = [],
     ) {}
 
     /**
@@ -45,6 +47,9 @@ final class GuardConfig
             $thresholds = $thresholdsRaw;
         }
 
+        $noDbRaw = $config['no_db_in_controller'] ?? [];
+        $noDbConfig = is_array($noDbRaw) ? $noDbRaw : [];
+
         return new self(
             rules: array_values(array_filter(
                 (array) ($config['rules'] ?? []),
@@ -59,6 +64,7 @@ final class GuardConfig
             reportFrom: $reportFrom,
             failOn: $failOn,
             scanRoots: self::normalizedScanRoots($config['paths'] ?? ['app']),
+            noDbControllerExcludePrefixes: self::stringListFrom($noDbConfig['exclude_path_prefixes'] ?? []),
         );
     }
 

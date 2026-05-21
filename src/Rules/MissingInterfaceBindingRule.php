@@ -113,7 +113,7 @@ final readonly class MissingInterfaceBindingRule implements RuleContract
             return false;
         }
 
-        if (str_starts_with($typeName, 'Illuminate\\')) {
+        if (str_starts_with($typeName, 'Illuminate\\') || str_starts_with($typeName, 'Laravel\\')) {
             return false;
         }
 

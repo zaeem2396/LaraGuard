@@ -16,7 +16,8 @@ final class GuardCommand extends Command
 {
     protected $signature = 'guard
         {--fail-on-error : Fail with a non-zero exit code when configured severity thresholds are exceeded}
-        {--format=txt : Output format (txt or json)}';
+        {--format=txt : Output format (txt or json)}
+        {--stats : Print how many files were scanned before results}';
 
     protected $description = 'Architectural guard rails for your Laravel application.';
 
@@ -30,7 +31,7 @@ final class GuardCommand extends Command
     public function handle(): int
     {
         try {
-            $violations = $this->engine->run();
+            $result = $this->engine->run();
         } catch (Throwable $exception) {
             $this->components->error($exception->getMessage());
 
@@ -44,10 +45,10 @@ final class GuardCommand extends Command
         $format = is_string($formatOption) ? $formatOption : 'txt';
 
         if ($format === 'json') {
-            $payload = $renderer->toJsonPayload($violations);
+            $payload = $renderer->toJsonPayload($result->violations, $result->filesScanned);
             $this->line(json_encode($payload, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR));
 
-            return $this->resolveExitCode($violations);
+            return $this->resolveExitCode($result->violations);
         }
 
         if ($format !== 'txt') {
@@ -56,9 +57,14 @@ final class GuardCommand extends Command
             return self::FAILURE;
         }
 
-        $renderer->renderHuman($violations);
+        if ((bool) $this->option('stats')) {
+            $io->writeln(sprintf('  <fg=gray>Scanned %d file(s)</>', $result->filesScanned));
+            $io->newLine();
+        }
 
-        return $this->resolveExitCode($violations);
+        $renderer->renderHuman($result->violations, $result->filesScanned);
+
+        return $this->resolveExitCode($result->violations);
     }
 
     /**

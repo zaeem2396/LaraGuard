@@ -48,6 +48,23 @@ return [
         'fat_class' => [
             'max_method_count' => 20,
             'max_public_method_count' => 12,
+            // Inclusive line span of each class body; set to 0 to disable.
+            'max_line_count' => 200,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | no-db-in-controller options
+    |--------------------------------------------------------------------------
+    |
+    | Path prefixes (relative to the app root, forward slashes) skipped by
+    | the no-db-in-controller rule even when under Http/Controllers.
+    |
+    */
+    'no_db_in_controller' => [
+        'exclude_path_prefixes' => [
+            // 'app/Http/Controllers/Api/V1',
         ],
     ],
 

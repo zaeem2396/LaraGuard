@@ -25,6 +25,18 @@ The scanner may also emit diagnostics with rule id `scanner` (e.g. missing scan 
 
 **CI:** Because violations are **errors**, `php artisan guard --fail-on-error` exits with code `1` when this rule fires.
 
+**Exclude paths:** Skip specific controller subtrees via `no_db_in_controller.exclude_path_prefixes` (path prefixes relative to the app root):
+
+```php
+'no_db_in_controller' => [
+    'exclude_path_prefixes' => [
+        'app/Http/Controllers/Api/V1',
+    ],
+],
+```
+
+**Does not detect:** Instance-level persistence (`$user->save()`) — planned for a later release.
+
 ## `fat-class`
 
 **Goal:** Highlight classes that are growing too large to maintain.
@@ -34,6 +46,7 @@ The scanner may also emit diagnostics with rule id `scanner` (e.g. missing scan 
 - Per **class** in a file (not per file totals)
 - Non-abstract method count vs `thresholds.fat_class.max_method_count` (default `20`)
 - Public method count vs `thresholds.fat_class.max_public_method_count` (default `12`)
+- Inclusive line span (AST start/end lines) vs `thresholds.fat_class.max_line_count` (default `200`, `0` disables)
 
 **Configure** in `config/guard.php`:
 
@@ -42,11 +55,10 @@ The scanner may also emit diagnostics with rule id `scanner` (e.g. missing scan 
     'fat_class' => [
         'max_method_count' => 20,
         'max_public_method_count' => 12,
+        'max_line_count' => 200,
     ],
 ],
 ```
-
-Line-count thresholds are not implemented yet.
 
 ## `missing-interface-binding`
 
@@ -57,9 +69,21 @@ Line-count thresholds are not implemented yet.
 - Concrete constructor parameter types under `app/Services` and `app/Repositories` (path segments `Services/`, `Repositories/`)
 - Resolves `use` imports so short type names (e.g. `OrderRepository`) map to `App\…` classes
 
+**Skips:**
+
+- Parameters already typed as `*Interface`
+- `Illuminate\*` and `Laravel\*` framework types
+
 **Does not yet detect:**
 
 - Whether a matching interface is already bound in a service provider
+
+## CLI options
+
+| Flag | Purpose |
+| ---- | ------- |
+| `--stats` | Print how many files were scanned before results |
+| `--format=json` | JSON output; `summary.files_scanned` mirrors the scan count |
 
 ## Severity and CI
 

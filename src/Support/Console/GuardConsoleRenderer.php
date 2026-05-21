@@ -20,7 +20,7 @@ final readonly class GuardConsoleRenderer
     /**
      * @param  list<Violation>  $violations
      */
-    public function renderHuman(array $violations): int
+    public function renderHuman(array $violations, int $filesScanned): int
     {
         $filtered = $this->filter($violations);
 
@@ -35,7 +35,7 @@ final readonly class GuardConsoleRenderer
         $this->renderSection('Warnings', $warnings, 'yellow');
         $this->renderSection('Info', $infos, 'cyan');
 
-        $this->renderSummary($errors, $warnings, $infos);
+        $this->renderSummary($errors, $warnings, $infos, $filesScanned);
 
         return count($errors);
     }
@@ -44,7 +44,7 @@ final readonly class GuardConsoleRenderer
      * @param  list<Violation>  $violations
      * @return array{errors: list<array<string, mixed>>, warnings: list<array<string, mixed>>, info: list<array<string, mixed>>, summary: array<string, int>}
      */
-    public function toJsonPayload(array $violations): array
+    public function toJsonPayload(array $violations, int $filesScanned): array
     {
         $filtered = $this->filter($violations);
 
@@ -60,6 +60,7 @@ final readonly class GuardConsoleRenderer
                 'errors' => count($errors),
                 'warnings' => count($warnings),
                 'info' => count($infos),
+                'files_scanned' => $filesScanned,
             ],
         ];
     }
@@ -112,10 +113,11 @@ final readonly class GuardConsoleRenderer
      * @param  list<Violation>  $warnings
      * @param  list<Violation>  $infos
      */
-    private function renderSummary(array $errors, array $warnings, array $infos): void
+    private function renderSummary(array $errors, array $warnings, array $infos, int $filesScanned): void
     {
         $this->io->newLine();
         $this->io->writeln('  <fg=gray>────────────</>');
+        $this->io->writeln(sprintf('  <fg=gray>Files</>   : %d scanned', $filesScanned));
         $this->io->writeln(sprintf('  <fg=red>Errors</>  : %d', count($errors)));
         $this->io->writeln(sprintf('  <fg=yellow>Warnings</>: %d', count($warnings)));
         $this->io->writeln(sprintf('  <fg=cyan>Info</>    : %d', count($infos)));
