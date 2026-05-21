@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - Unreleased
+
+### Added
+
+- `ClassLineSpan` helper and `thresholds.fat_class.max_line_count` (default `200`, `0` disables) for per-class line span violations.
+- `AnalysisResult` from `GuardAnalysisEngine::run()` with `filesScanned` count.
+- `--stats` on `php artisan guard` to print scanned file count before results.
+- `summary.files_scanned` in JSON output and human summary footer.
+- `no_db_in_controller.exclude_path_prefixes` to skip database rule checks under chosen controller path prefixes.
+
+### Fixed
+
+- **missing-interface-binding** also skips `Laravel\*` framework types (in addition to `Illuminate\*`).
+
 ## [0.1.1] - 2026-05-21
 
 ### Added
