@@ -6,6 +6,7 @@ namespace LaravelGuard\Guard\Rules;
 
 use LaravelGuard\Guard\Config\GuardConfig;
 use LaravelGuard\Guard\Contracts\RuleContract;
+use LaravelGuard\Guard\Support\ClassLineSpan;
 use LaravelGuard\Guard\Support\ScanFile;
 use LaravelGuard\Guard\Violations\Severity;
 use LaravelGuard\Guard\Violations\Violation;
@@ -30,8 +31,9 @@ final readonly class FatClassRule implements RuleContract
         $fat = is_array($fatRaw) ? $fatRaw : [];
         $maxMethods = $this->intThreshold($fat['max_method_count'] ?? 20, 20);
         $maxPublicMethods = $this->intThreshold($fat['max_public_method_count'] ?? 12, 12);
+        $maxLineCount = $this->intThreshold($fat['max_line_count'] ?? 250, 250);
 
-        if ($maxMethods <= 0 && $maxPublicMethods <= 0) {
+        if ($maxMethods <= 0 && $maxPublicMethods <= 0 && $maxLineCount <= 0) {
             return [];
         }
 
@@ -80,6 +82,23 @@ final readonly class FatClassRule implements RuleContract
                         $maxPublicMethods,
                     ),
                 );
+            }
+
+            if ($maxLineCount > 0) {
+                $lineCount = ClassLineSpan::inclusiveLineCount($class);
+
+                if ($lineCount > $maxLineCount) {
+                    $violations[] = $this->violation(
+                        file: $file->relativePath,
+                        line: $line,
+                        message: sprintf(
+                            'Class "%s" spans %d lines, exceeding the threshold of %d.',
+                            $className,
+                            $lineCount,
+                            $maxLineCount,
+                        ),
+                    );
+                }
             }
         }
 
