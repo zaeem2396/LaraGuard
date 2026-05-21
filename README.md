@@ -6,6 +6,8 @@
 
 **Laravel Guard** is a lightweight architectural linting toolkit for Laravel applications. It combines an AST-first scanner (via [`nikic/php-parser`](https://github.com/nikic/PHP-Parser)), a small rule engine, and a CLI experience that feels familiar if you already use Laravel Pint or PHPUnit.
 
+**Latest release:** [v0.1.1](https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.1) — import-aware rule resolution for controllers and services.
+
 ## Highlights
 
 - **Zero-config by default** — scans `app/` with sensible ignores after install

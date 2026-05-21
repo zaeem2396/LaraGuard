@@ -7,7 +7,7 @@ Thanks for helping improve Laravel Guard. The project favors **clear architectur
 | Command | Purpose |
 | ------- | ------- |
 | `composer lint` | Laravel Pint (`pint.json`; test fixtures excluded) |
-| `composer analyse` | PHPStan + Larastan (`phpstan.neon.dist`) |
+| `composer analyse` | PHPStan + Larastan (`phpstan.neon.dist`, cache in `.phpstan/cache`) |
 | `composer test` | Pest + Orchestra Testbench |
 | `composer security-audit` | Composer security audit |
 | `composer validate-package` | Strict `composer.json` validation |

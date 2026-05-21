@@ -120,6 +120,16 @@ Besides rule violations, the scanner may report:
 
 These appear in the same CLI sections and JSON payload as rule output.
 
+## Versioning
+
+Install a specific release from GitHub:
+
+```bash
+composer require laravel-guard/laravel-guard:v0.1.1
+```
+
+See [releases](https://github.com/zaeem2396/LaraGuard/releases) for changelog notes.
+
 ## Roadmap
 
-Future releases may add baselines, SARIF, `.guardignore`, layer rules, and persistent scan caching. See the maintainer roadmap (local) or project issues for status.
+Future releases may add baselines, SARIF, `.guardignore`, layer rules, and persistent scan caching. See project issues for status.

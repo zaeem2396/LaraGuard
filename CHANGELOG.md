@@ -7,16 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.1] - Unreleased
+## [0.1.1] - 2026-05-21
 
 ### Added
 
-- `ImportAliasMap` helper to resolve `use` statement aliases when analyzing AST nodes.
+- `ImportAliasMap` helper to resolve `use` statement aliases when analyzing AST nodes (including imports inside `namespace` blocks).
 
 ### Fixed
 
 - **no-db-in-controller** now flags Eloquent static calls on imported short class names (e.g. `User::where()` with `use App\Models\User`).
 - **missing-interface-binding** resolves imported short constructor types (e.g. `OrderRepository` → `App\Repositories\OrderRepository`).
+
+### Changed
+
+- PHPStan uses project-local cache directory (`.phpstan/cache`) to avoid `/tmp` lock failures in CI and pre-push hooks.
 
 ## [0.1.0] - 2026-05-20
 
@@ -51,4 +55,5 @@ First public release: architectural linting for Laravel via `php artisan guard`.
 - No `.guardignore`, SARIF output, baselines, or layer rules (planned for later releases).
 - Install from VCS until Packagist publication (see [installation](docs/installation.md)).
 
+[0.1.1]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.1
 [0.1.0]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.0
