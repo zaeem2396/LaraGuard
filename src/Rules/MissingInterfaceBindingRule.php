@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaravelGuard\Guard\Rules;
 
 use LaravelGuard\Guard\Contracts\RuleContract;
+use LaravelGuard\Guard\Support\ImportAliasMap;
 use LaravelGuard\Guard\Support\ScanFile;
 use LaravelGuard\Guard\Violations\Severity;
 use LaravelGuard\Guard\Violations\Violation;
@@ -34,6 +35,7 @@ final readonly class MissingInterfaceBindingRule implements RuleContract
             return [];
         }
 
+        $importMap = ImportAliasMap::fromStatements($file->statements);
         $finder = new NodeFinder;
         $violations = [];
 
@@ -49,7 +51,7 @@ final readonly class MissingInterfaceBindingRule implements RuleContract
             }
 
             foreach ($constructor->getParams() as $parameter) {
-                $typeName = $this->resolveParameterTypeName($parameter->type);
+                $typeName = $this->resolveParameterTypeName($parameter->type, $importMap);
 
                 if ($typeName === null) {
                     continue;
@@ -74,14 +76,21 @@ final readonly class MissingInterfaceBindingRule implements RuleContract
         return $violations;
     }
 
-    private function resolveParameterTypeName(?Node $type): ?string
+    /**
+     * @param  array<string, string>  $importMap
+     */
+    private function resolveParameterTypeName(?Node $type, array $importMap): ?string
     {
         if ($type instanceof NullableType) {
-            return $this->resolveParameterTypeName($type->type);
+            return $this->resolveParameterTypeName($type->type, $importMap);
         }
 
-        if ($type instanceof FullyQualified || $type instanceof Name) {
+        if ($type instanceof FullyQualified) {
             return ltrim($type->toString(), '\\');
+        }
+
+        if ($type instanceof Name) {
+            return ImportAliasMap::resolveName($type, $importMap);
         }
 
         return null;
