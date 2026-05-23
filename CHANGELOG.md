@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - Unreleased
+
+### Added
+
+- `ServiceProviderBindingScanner` — AST scan of `app/Providers` for `bind`, `singleton`, and `scoped` registrations using `SomeClass::class` arguments.
+- `ContainerBindingMap` — in-memory interface → concrete map built once per `guard` run.
+- **missing-interface-binding** suppresses false positives when a concrete type is already bound to an interface in a service provider.
+- **missing-interface-binding** `strict` mode — flags constructors that still type-hint concrete classes when a container binding exists.
+- Config keys `provider_bindings.scan_paths` and `missing_interface_binding.strict`.
+
 ## [0.1.2] - 2026-05-22
 
 ### Added

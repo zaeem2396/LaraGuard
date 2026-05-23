@@ -13,6 +13,8 @@ use LaravelGuard\Guard\Contracts\RuleContract;
 use LaravelGuard\Guard\Contracts\ScanCacheContract;
 use LaravelGuard\Guard\Contracts\ScannerContract;
 use LaravelGuard\Guard\Scanners\PhpParserScanner;
+use LaravelGuard\Guard\Scanners\ServiceProviderBindingScanner;
+use LaravelGuard\Guard\Support\ContainerBindingMap;
 use LaravelGuard\Guard\Support\GuardAnalysisEngine;
 use LaravelGuard\Guard\Support\NullScanCache;
 use LaravelGuard\Guard\Support\RuleRegistry;
@@ -35,6 +37,12 @@ final class GuardServiceProvider extends ServiceProvider
 
         $this->app->singleton(ScanCacheContract::class, NullScanCache::class);
         $this->app->bind(ScannerContract::class, PhpParserScanner::class);
+
+        $this->app->singleton(ContainerBindingMap::class, function (Application $app): ContainerBindingMap {
+            return $app->make(ServiceProviderBindingScanner::class)->scan();
+        });
+
+        $this->app->singleton(ServiceProviderBindingScanner::class);
 
         $this->app->singleton(RuleRegistry::class, function (Application $app): RuleRegistry {
             $registry = new RuleRegistry;

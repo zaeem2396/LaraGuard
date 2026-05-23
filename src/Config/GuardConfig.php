@@ -15,6 +15,7 @@ final class GuardConfig
      * @param  array<string, mixed>  $thresholds
      * @param  list<string>  $scanRoots
      * @param  list<string>  $noDbControllerExcludePrefixes
+     * @param  list<string>  $providerBindingScanPaths
      */
     public function __construct(
         public array $rules,
@@ -24,6 +25,8 @@ final class GuardConfig
         public Severity $failOn,
         public array $scanRoots,
         public array $noDbControllerExcludePrefixes = [],
+        public array $providerBindingScanPaths = ['app/Providers'],
+        public bool $missingInterfaceBindingStrict = false,
     ) {}
 
     /**
@@ -50,6 +53,12 @@ final class GuardConfig
         $noDbRaw = $config['no_db_in_controller'] ?? [];
         $noDbConfig = is_array($noDbRaw) ? $noDbRaw : [];
 
+        $bindingRaw = $config['provider_bindings'] ?? [];
+        $bindingConfig = is_array($bindingRaw) ? $bindingRaw : [];
+
+        $missingInterfaceRaw = $config['missing_interface_binding'] ?? [];
+        $missingInterfaceConfig = is_array($missingInterfaceRaw) ? $missingInterfaceRaw : [];
+
         return new self(
             rules: array_values(array_filter(
                 (array) ($config['rules'] ?? []),
@@ -65,6 +74,8 @@ final class GuardConfig
             failOn: $failOn,
             scanRoots: self::normalizedScanRoots($config['paths'] ?? ['app']),
             noDbControllerExcludePrefixes: self::stringListFrom($noDbConfig['exclude_path_prefixes'] ?? []),
+            providerBindingScanPaths: self::normalizedScanRoots($bindingConfig['scan_paths'] ?? ['app/Providers']),
+            missingInterfaceBindingStrict: (bool) ($missingInterfaceConfig['strict'] ?? false),
         );
     }
 

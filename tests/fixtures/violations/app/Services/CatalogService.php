@@ -6,9 +6,9 @@ namespace App\Services;
 
 use App\Repositories\CatalogRepository;
 
-class PromotedOrderService
+class CatalogService
 {
     public function __construct(
-        private readonly CatalogRepository $catalog,
+        private CatalogRepository $catalog,
     ) {}
 }
