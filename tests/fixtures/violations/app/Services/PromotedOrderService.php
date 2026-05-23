@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Repositories\OrderRepository;
+use App\Repositories\CatalogRepository;
 
 class PromotedOrderService
 {
     public function __construct(
-        private readonly OrderRepository $orders,
+        private readonly CatalogRepository $catalog,
     ) {}
 }
