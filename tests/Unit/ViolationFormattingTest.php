@@ -36,6 +36,9 @@ it('serializes violations for json consumers', function (): void {
         ),
     ], 3);
 
+    expect($payload['version'])->toBe('1');
+    expect($payload['summary']['files_scanned'])->toBe(3);
+
     expect($payload['warnings'][0])->toMatchArray([
         'severity' => Severity::Warning->value,
         'file' => 'app/Example.php',
