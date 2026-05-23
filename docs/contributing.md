@@ -35,6 +35,7 @@ Do not run Pint on `tests/fixtures/` (intentionally invalid PHP may exist for pa
 - Keep rules and scanners cohesive; add contracts only when multiple implementations are likely.
 - Prefer AST analysis (`nikic/php-parser`) over regex for PHP structure.
 - Mark roadmap items **Partial** until behavior is tested and documented in [rules.md](rules.md).
+- Container binding behavior lives in `ServiceProviderBindingScanner` and `ContainerBindingMap`; update tests under `tests/fixtures/provider-bindings/` when extending binding detection.
 
 ## Documentation
 
