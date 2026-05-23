@@ -53,7 +53,7 @@ php artisan guard --stats
 | ---- | -------- | ------- |
 | `no-db-in-controller` | error | No `DB` facade or Eloquent static queries in HTTP controllers |
 | `fat-class` | info | Classes over method, public-method, or line-span limits |
-| `missing-interface-binding` | info | Concrete `App\` constructor types in Services / Repositories |
+| `missing-interface-binding` | info | Concrete `App\` constructor types in Services / Repositories (container-aware) |
 
 See [docs/rules.md](docs/rules.md) for behavior, limits, and configuration.
 
@@ -66,6 +66,8 @@ Publish `config/guard.php` and adjust:
 - **`ignore`** — path prefixes to skip
 - **`thresholds`** — per-rule limits (e.g. `fat_class.max_line_count`)
 - **`no_db_in_controller`** — optional controller path prefixes to exclude from DB checks
+- **`provider_bindings`** — paths scanned for interface → concrete container bindings
+- **`missing_interface_binding.strict`** — flag concrete type-hints when a binding already exists
 - **`severity`** — `report_from` and `fail_on` for output and exit codes
 
 ## Architecture

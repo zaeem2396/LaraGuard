@@ -33,6 +33,7 @@ This copies `config/guard.php` where you can:
 - Add or remove rule classes under `rules`
 - Change `paths` and `ignore`
 - Tune `thresholds` and `severity`
+- Configure `provider_bindings` and `missing_interface_binding` (container-aware interface rule)
 
 ## Requirements
 

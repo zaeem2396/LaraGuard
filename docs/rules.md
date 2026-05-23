@@ -10,7 +10,7 @@ Enable or disable rules by editing the `rules` array in `config/guard.php`.
 | ------- | ----- | ---------------- | -------------- |
 | `no-db-in-controller` | `NoDbInControllerRule` | **error** | Database access inside `Http/Controllers` |
 | `fat-class` | `FatClassRule` | **info** | Classes exceeding method, public-method, or line-span thresholds |
-| `missing-interface-binding` | `MissingInterfaceBindingRule` | **info** | Concrete `App\` types in constructors under Services/Repositories |
+| `missing-interface-binding` | `MissingInterfaceBindingRule` | **info** | Concrete `App\` types in constructors under Services/Repositories (container-aware) |
 
 The scanner may also emit diagnostics with rule id `scanner` (e.g. missing scan roots, unparseable PHP files). Those use **warning** severity.
 
@@ -73,10 +73,41 @@ The scanner may also emit diagnostics with rule id `scanner` (e.g. missing scan 
 
 - Parameters already typed as `*Interface`
 - `Illuminate\*` and `Laravel\*` framework types
+- Concrete types that are registered as the implementation of an interface in a scanned service provider (see [Container binding graph](#container-binding-graph-phase-1))
 
-**Does not yet detect:**
+**Strict mode** (`missing_interface_binding.strict`, default `false`):
 
-- Whether a matching interface is already bound in a service provider
+When enabled, emits an **info** violation if the constructor type-hints a concrete class that already has a container binding to an interface — nudging you to type-hint the interface instead.
+
+```php
+'missing_interface_binding' => [
+    'strict' => true,
+],
+```
+
+## Container binding graph (phase 1)
+
+Before evaluating services and repositories, Guard scans configured provider paths (default `app/Providers`) and builds a map from **interface FQCN → concrete FQCN** by parsing:
+
+- `$this->app->bind(Interface::class, Concrete::class)`
+- `$this->app->singleton(…)` and `$this->app->scoped(…)` with the same `::class` argument shape
+
+Configure scan roots:
+
+```php
+'provider_bindings' => [
+    'scan_paths' => [
+        'app/Providers',
+    ],
+],
+```
+
+**Phase 1 limitations:**
+
+- Only `SomeClass::class` arguments are recognized (not string literals or variables).
+- Bindings must appear as `$this->app->bind|singleton|scoped` calls.
+- Closures, `instance()`, attribute discovery, and package auto-registration are not analyzed.
+- The map is rebuilt on every `php artisan guard` run (no persistent cache yet).
 
 ## CLI options
 
