@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LaravelGuard\Guard\Rules;
 
+use LaravelGuard\Guard\Config\GuardConfig;
 use LaravelGuard\Guard\Contracts\RuleContract;
+use LaravelGuard\Guard\Support\ContainerBindingMap;
 use LaravelGuard\Guard\Support\ImportAliasMap;
 use LaravelGuard\Guard\Support\ScanFile;
 use LaravelGuard\Guard\Violations\Severity;
@@ -23,6 +25,11 @@ final readonly class MissingInterfaceBindingRule implements RuleContract
         'Services',
         'Repositories',
     ];
+
+    public function __construct(
+        private GuardConfig $config,
+        private ContainerBindingMap $bindings,
+    ) {}
 
     public function id(): string
     {
@@ -53,23 +60,30 @@ final readonly class MissingInterfaceBindingRule implements RuleContract
             foreach ($constructor->getParams() as $parameter) {
                 $typeName = $this->resolveParameterTypeName($parameter->type, $importMap);
 
-                if ($typeName === null) {
+                if ($typeName === null || ! $this->isConcreteAppType($typeName)) {
                     continue;
                 }
 
-                if ($this->shouldSuggestInterface($typeName)) {
-                    $violations[] = new Violation(
-                        severity: Severity::Info,
-                        file: $file->relativePath,
-                        line: $parameter->getStartLine() ?? $constructor->getStartLine(),
-                        message: sprintf(
-                            'Constructor depends on concrete "%s"; prefer an interface bound in the service container.',
-                            $typeName,
-                        ),
-                        suggestion: 'Introduce an interface (e.g. '.$typeName.'Interface) and bind it in a service provider.',
-                        ruleId: $this->id(),
-                    );
+                $boundInterface = $this->bindings->boundInterfaceForConcrete($typeName);
+
+                if ($boundInterface !== null) {
+                    if ($this->config->missingInterfaceBindingStrict) {
+                        $violations[] = $this->strictViolation(
+                            file: $file->relativePath,
+                            line: $parameter->getStartLine() ?? $constructor->getStartLine(),
+                            concrete: $typeName,
+                            interface: $boundInterface,
+                        );
+                    }
+
+                    continue;
                 }
+
+                $violations[] = $this->missingBindingViolation(
+                    file: $file->relativePath,
+                    line: $parameter->getStartLine() ?? $constructor->getStartLine(),
+                    typeName: $typeName,
+                );
             }
         }
 
@@ -107,7 +121,7 @@ final readonly class MissingInterfaceBindingRule implements RuleContract
         return null;
     }
 
-    private function shouldSuggestInterface(string $typeName): bool
+    private function isConcreteAppType(string $typeName): bool
     {
         if (str_ends_with($typeName, 'Interface')) {
             return false;
@@ -118,6 +132,37 @@ final readonly class MissingInterfaceBindingRule implements RuleContract
         }
 
         return str_starts_with($typeName, 'App\\');
+    }
+
+    private function missingBindingViolation(string $file, int $line, string $typeName): Violation
+    {
+        return new Violation(
+            severity: Severity::Info,
+            file: $file,
+            line: $line,
+            message: sprintf(
+                'Constructor depends on concrete "%s"; prefer an interface bound in the service container.',
+                $typeName,
+            ),
+            suggestion: 'Introduce an interface (e.g. '.$typeName.'Interface) and bind it in a service provider.',
+            ruleId: $this->id(),
+        );
+    }
+
+    private function strictViolation(string $file, int $line, string $concrete, string $interface): Violation
+    {
+        return new Violation(
+            severity: Severity::Info,
+            file: $file,
+            line: $line,
+            message: sprintf(
+                'Constructor type-hints concrete "%s" but the container binds "%s"; type-hint the interface instead.',
+                $concrete,
+                $interface,
+            ),
+            suggestion: sprintf('Change the parameter type to "%s".', $interface),
+            ruleId: $this->id(),
+        );
     }
 
     private function isWatchedPath(string $relativePath): bool
