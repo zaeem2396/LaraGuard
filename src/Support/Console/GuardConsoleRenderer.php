@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaravelGuard\Guard\Support\Console;
 
 use LaravelGuard\Guard\Config\GuardConfig;
+use LaravelGuard\Guard\Support\JsonOutputSchema;
 use LaravelGuard\Guard\Violations\Severity;
 use LaravelGuard\Guard\Violations\Violation;
 use Symfony\Component\Console\Helper\Table;
@@ -42,7 +43,7 @@ final readonly class GuardConsoleRenderer
 
     /**
      * @param  list<Violation>  $violations
-     * @return array{errors: list<array<string, mixed>>, warnings: list<array<string, mixed>>, info: list<array<string, mixed>>, summary: array<string, int>}
+     * @return array{version: string, errors: list<array<string, mixed>>, warnings: list<array<string, mixed>>, info: list<array<string, mixed>>, summary: array<string, int|string>}
      */
     public function toJsonPayload(array $violations, int $filesScanned): array
     {
@@ -53,6 +54,7 @@ final readonly class GuardConsoleRenderer
         $infos = array_values(array_filter($filtered, static fn (Violation $v): bool => $v->severity === Severity::Info));
 
         return [
+            'version' => JsonOutputSchema::VERSION,
             'errors' => array_map(static fn (Violation $v): array => $v->toArray(), $errors),
             'warnings' => array_map(static fn (Violation $v): array => $v->toArray(), $warnings),
             'info' => array_map(static fn (Violation $v): array => $v->toArray(), $infos),

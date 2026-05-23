@@ -17,7 +17,8 @@ it('emits valid json when requested', function (): void {
 
     $decoded = json_decode(trim((string) Artisan::output()), true, 512, JSON_THROW_ON_ERROR);
 
-    expect($decoded)->toHaveKeys(['errors', 'warnings', 'info', 'summary']);
+    expect($decoded)->toHaveKeys(['version', 'errors', 'warnings', 'info', 'summary']);
+    expect($decoded['version'])->toBe('1');
     expect($decoded['summary'])->toHaveKey('files_scanned');
     expect($decoded['summary']['files_scanned'])->toBeGreaterThan(0);
     expect($decoded['errors'])->not->toBeEmpty();

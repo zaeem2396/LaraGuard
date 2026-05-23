@@ -46,6 +46,7 @@ When changing behavior, update:
 - [ci.md](ci.md) — pipeline examples
 - [README.md](../README.md) — high-level summary
 - [CHANGELOG.md](../CHANGELOG.md) — user-facing changes
+- [SECURITY.md](../SECURITY.md) — vulnerability reporting (do not open public issues for security)
 
 ## Questions
 

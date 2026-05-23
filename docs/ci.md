@@ -21,7 +21,7 @@ Guard exits `0` when no violations meet `severity.fail_on` (default: **error**).
   run: php artisan guard --format=json > guard-report.json
 ```
 
-The JSON object includes `errors`, `warnings`, `info`, and `summary` (including `files_scanned`). See [rules.md](rules.md#severity-and-ci).
+The JSON object includes `version`, `errors`, `warnings`, `info`, and `summary` (including `files_scanned`). See [rules.md](rules.md#json-output-contract).
 
 Optional scan statistics before human output:
 

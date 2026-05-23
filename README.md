@@ -21,6 +21,18 @@
 - PHP **8.3+**
 - Laravel **11+** / **12+** / **13+** (Illuminate components `^11|^12|^13`)
 
+## Version compatibility
+
+Maintainer CI runs against the matrix below. Your app should use a supported PHP and Laravel pair.
+
+| PHP | Laravel 11 | Laravel 12 | Laravel 13 |
+| --- | ---------- | ---------- | ---------- |
+| 8.3 | Supported | Supported | — |
+| 8.4 | Supported | Supported | — |
+| 8.5 | — | — | Supported |
+
+Illuminate component constraints in `composer.json`: `^11.0|^12.0|^13.0`.
+
 ## Quick start
 
 ```bash
@@ -88,6 +100,7 @@ Design goals: small classes, container-driven wiring, no regex-based PHP parsing
 - [Rules reference](docs/rules.md)
 - [CI integration](docs/ci.md)
 - [Contributing](docs/contributing.md)
+- [Security policy](SECURITY.md)
 
 ## License
 
