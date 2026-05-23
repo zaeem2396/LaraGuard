@@ -51,6 +51,8 @@ php artisan guard --fail-on-error
 php artisan guard --stats
 ```
 
+JSON output includes a `version` field (currently `"1"`). See [rules.md](rules.md#json-output-contract) for the stable key contract.
+
 ### CI integration
 
 Use `--fail-on-error` so the process exits with code `1` when violations meet `severity.fail_on` (default: **error**). Controller database violations are **errors**, so they fail typical pipelines.
