@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.3] - Unreleased
+## [0.1.3] - 2026-05-23
 
 ### Added
 
@@ -79,6 +79,7 @@ First public release: architectural linting for Laravel via `php artisan guard`.
 - No `.guardignore`, SARIF output, baselines, or layer rules (planned for later releases).
 - Install from VCS until Packagist publication (see [installation](docs/installation.md)).
 
+[0.1.3]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.3
 [0.1.2]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.2
 [0.1.1]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.1
 [0.1.0]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.0

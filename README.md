@@ -6,12 +6,12 @@
 
 **Laravel Guard** is a lightweight architectural linting toolkit for Laravel applications. It combines an AST-first scanner (via [`nikic/php-parser`](https://github.com/nikic/PHP-Parser)), a small rule engine, and a CLI experience that feels familiar if you already use Laravel Pint or PHPUnit.
 
-**Latest release:** [v0.1.2](https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.2) — line-count thresholds, controller path excludes, and scan statistics.
+**Latest release:** [v0.1.3](https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.3) — container-aware interface binding checks with optional strict mode.
 
 ## Highlights
 
 - **Zero-config by default** — scans `app/` with sensible ignores after install
-- **Bundled rules** for controllers, class size, and constructor bindings
+- **Bundled rules** for controllers, class size, and container-aware constructor bindings
 - **CI friendly** — JSON output and non-zero exits via `--fail-on-error`
 - **Extensible** — implement `RuleContract` and register classes in config
 - **Future-proof seams** for caching, SARIF, baselines, and dependency graphs
@@ -75,6 +75,7 @@ Publish `config/guard.php` and adjust:
 | Layer | Responsibility |
 | ----- | -------------- |
 | **Scanner** | Walks configured paths, parses PHP to AST, emits scan diagnostics |
+| **Binding scan** | Parses service providers for `bind` / `singleton` / `scoped` interface maps |
 | **Rules** | Inspect each `ScanFile` and return `Violation` instances |
 | **Engine** | Merges scanner diagnostics with rule results |
 | **Renderer** | Human (Errors / Warnings / Info) or JSON output |
