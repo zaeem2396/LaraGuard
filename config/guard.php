@@ -70,6 +70,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Service provider binding scan
+    |--------------------------------------------------------------------------
+    |
+    | Paths scanned to build an interface => concrete map for
+    | missing-interface-binding (bind, singleton, scoped calls).
+    |
+    */
+    'provider_bindings' => [
+        'scan_paths' => [
+            'app/Providers',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | missing-interface-binding options
+    |--------------------------------------------------------------------------
+    |
+    | strict: when true, flag constructors that type-hint a concrete class
+    | even when the container already binds an interface to that concrete.
+    |
+    */
+    'missing_interface_binding' => [
+        'strict' => false,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Minimum severity emitted as console "errors"
     |--------------------------------------------------------------------------
     |
