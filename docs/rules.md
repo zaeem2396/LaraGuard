@@ -109,12 +109,46 @@ Configure scan roots:
 - Closures, `instance()`, attribute discovery, and package auto-registration are not analyzed.
 - The map is rebuilt on every `php artisan guard` run (no persistent cache yet).
 
+## JSON output contract
+
+When `--format=json` is used, the top-level object includes a stable schema version and fixed keys for CI consumers.
+
+| Key | Type | Description |
+| --- | ---- | ----------- |
+| `version` | string | Schema version (currently `"1"`) |
+| `errors` | array | Violations with severity **error** |
+| `warnings` | array | Violations with severity **warning** |
+| `info` | array | Violations with severity **info** |
+| `summary` | object | Aggregate counts |
+
+Each violation object contains:
+
+| Key | Type | Description |
+| --- | ---- | ----------- |
+| `severity` | string | `error`, `warning`, or `info` |
+| `file` | string | Project-relative path |
+| `line` | int | Line number (`0` for file-level scanner diagnostics) |
+| `message` | string | Human-readable description |
+| `suggestion` | string\|null | Optional remediation hint |
+| `rule_id` | string\|null | Rule identifier (e.g. `no-db-in-controller`, `scanner`) |
+
+The `summary` object contains:
+
+| Key | Type | Description |
+| --- | ---- | ----------- |
+| `errors` | int | Count of error violations |
+| `warnings` | int | Count of warning violations |
+| `info` | int | Count of info violations |
+| `files_scanned` | int | Number of PHP files analyzed |
+
+New fields may be added in future schema versions; consumers should read `version` before parsing.
+
 ## CLI options
 
 | Flag | Purpose |
 | ---- | ------- |
 | `--stats` | Print how many files were scanned before results |
-| `--format=json` | JSON output; `summary.files_scanned` mirrors the scan count |
+| `--format=json` | JSON output using schema version `1` (see [JSON output contract](#json-output-contract)) |
 
 ## Severity and CI
 
