@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - Unreleased
+
+### Added
+
+- JSON output schema `version` field (currently `"1"`) for stable CI and tooling integration.
+- Documented JSON output contract in [docs/rules.md](docs/rules.md#json-output-contract).
+- [SECURITY.md](SECURITY.md) vulnerability disclosure policy.
+- README version compatibility table (PHP × Laravel).
+- Additional scan fixtures: empty class, backed enum, and trait-composed service.
+
 ## [0.1.3] - 2026-05-23
 
 ### Added
