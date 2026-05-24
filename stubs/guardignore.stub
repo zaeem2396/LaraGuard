@@ -1,0 +1,18 @@
+# Laravel Guard — paths excluded from scanning (gitignore-style syntax).
+#
+# Patterns are relative to your project root. Lines starting with # are comments.
+# Use ! to re-include a path after a broader ignore rule.
+#
+# Publish this file: php artisan vendor:publish --tag=guard-ignore
+#
+# Examples:
+#   app/Legacy/**
+#   storage/**
+#   !app/Legacy/ImportantController.php
+#
+# Config `ignore` prefixes in config/guard.php are merged with these patterns.
+
+bootstrap/cache
+storage
+vendor
+tests

@@ -92,5 +92,9 @@ final class GuardServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/guard.php' => config_path('guard.php'),
         ], 'guard-config');
+
+        $this->publishes([
+            __DIR__.'/../stubs/guardignore.stub' => base_path('.guardignore'),
+        ], 'guard-ignore');
     }
 }
