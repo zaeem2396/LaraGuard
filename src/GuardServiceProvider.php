@@ -53,6 +53,10 @@ final class GuardServiceProvider extends ServiceProvider
                     continue;
                 }
 
+                if (! $app->make(GuardConfig::class)->isRuleEnabled($rule->id())) {
+                    continue;
+                }
+
                 $registry->register($rule);
             }
 
@@ -63,6 +67,7 @@ final class GuardServiceProvider extends ServiceProvider
             return new GuardAnalysisEngine(
                 $app->make(ScannerContract::class),
                 $app->make(RuleRegistry::class),
+                $app->make(GuardConfig::class),
             );
         });
 

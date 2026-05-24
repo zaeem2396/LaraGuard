@@ -80,7 +80,8 @@ Publish `config/guard.php` and adjust:
 - **`no_db_in_controller`** — optional controller path prefixes to exclude from DB checks
 - **`provider_bindings`** — paths scanned for interface → concrete container bindings
 - **`missing_interface_binding.strict`** — flag concrete type-hints when a binding already exists
-- **`severity`** — `report_from` and `fail_on` for output and exit codes
+- **`rule_options`** — enable/disable rules and override per-rule severity
+- **`severity`** — `report_from` and `fail_on` for output and exit codes (supports `GUARD_FAIL_ON`)
 
 ## Architecture
 
@@ -98,6 +99,7 @@ Design goals: small classes, container-driven wiring, no regex-based PHP parsing
 
 - [Installation](docs/installation.md)
 - [Rules reference](docs/rules.md)
+- [Configuration](docs/configuration.md)
 - [CI integration](docs/ci.md)
 - [Contributing](docs/contributing.md)
 - [Security policy](SECURITY.md)

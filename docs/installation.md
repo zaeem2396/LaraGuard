@@ -31,8 +31,9 @@ php artisan vendor:publish --tag=guard-config
 This copies `config/guard.php` where you can:
 
 - Add or remove rule classes under `rules`
-- Change `paths` and `ignore`
-- Tune `thresholds` and `severity`
+- Enable or disable rules via `rule_options`
+- Change `paths` and `ignore` (or set `GUARD_PATHS` in `.env`)
+- Tune `thresholds`, `severity`, and `GUARD_FAIL_ON`
 - Configure `provider_bindings` and `missing_interface_binding` (container-aware interface rule)
 
 ## Requirements
