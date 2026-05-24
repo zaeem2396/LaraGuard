@@ -1,0 +1,2 @@
+app/Http/Controllers/Legacy/**
+!app/Http/Controllers/Legacy/ImportantController.php
