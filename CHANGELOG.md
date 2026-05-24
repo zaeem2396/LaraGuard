@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - Unreleased
+
+### Added
+
+- Root `.guardignore` file with gitignore-style patterns (comments, globs, negation with `!`).
+- `GlobPathMatcher` and `GuardIgnoreMatcher` — config `ignore` prefixes merge with `.guardignore` (union, last match wins).
+- Publish stub via `php artisan vendor:publish --tag=guard-ignore`.
+- Integration tests ensuring ignored paths are never scanned.
+
 ## [0.2.0] - 2026-05-24
 
 ### Added

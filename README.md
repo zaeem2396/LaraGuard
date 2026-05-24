@@ -10,7 +10,7 @@
 
 ## Highlights
 
-- **Zero-config by default** — scans `app/` with sensible ignores after install
+- **Zero-config by default** — scans `app/` with sensible ignores after install; optional `.guardignore` for globs and negation
 - **Bundled rules** for controllers, class size, and container-aware constructor bindings
 - **CI friendly** — JSON output and non-zero exits via `--fail-on-error`
 - **Extensible** — implement `RuleContract` and register classes in config
@@ -44,6 +44,7 @@ Optional: publish and customize configuration.
 
 ```bash
 php artisan vendor:publish --tag=guard-config
+php artisan vendor:publish --tag=guard-ignore   # optional glob ignore file
 ```
 
 Fail CI when **error**-level violations are found (including database usage in controllers):

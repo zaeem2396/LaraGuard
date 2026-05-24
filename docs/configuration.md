@@ -9,7 +9,7 @@ Laravel Guard reads `config/guard.php` (merged automatically; publish with `vend
 | `rules` | Rule class FQCNs to load |
 | `rule_options` | Per-rule `enabled` and `severity` overrides |
 | `paths` | Directories to scan (see `GUARD_PATHS`) |
-| `ignore` | Path prefixes skipped by the scanner |
+| `ignore` | Path prefixes and `.guardignore` patterns skipped by the scanner |
 | `thresholds` | Rule-specific numeric limits |
 | `severity` | Global output and exit-code thresholds |
 | `no_db_in_controller` | Controller path excludes for DB rule |
@@ -73,6 +73,51 @@ GUARD_PATHS=app,modules/Shared
 ```
 
 Comma-separated, trimmed paths relative to the application base path.
+
+## Ignored paths
+
+Guard skips files matched by **either**:
+
+1. **`ignore` in `config/guard.php`** — prefix-style paths (backward compatible).
+2. **`.guardignore` at the project root** — gitignore-like patterns with optional globs and negation.
+
+Patterns from both sources are merged. Later matching rules win (same as gitignore), so you can exclude a subtree and re-include specific files with `!`.
+
+```php
+'ignore' => [
+    'bootstrap/cache',
+    'storage',
+    'vendor',
+    'tests',
+],
+```
+
+Example `.guardignore`:
+
+```gitignore
+# Legacy controllers — still scanned unless negated
+app/Http/Controllers/Legacy/**
+
+# Re-include one file for gradual migration
+!app/Http/Controllers/Legacy/ImportantController.php
+```
+
+Supported pattern features:
+
+| Syntax | Meaning |
+| ------ | ------- |
+| `app/Legacy` | Match path prefix or segment |
+| `app/Legacy/` | Match directory and descendants |
+| `*` | Match within one path segment |
+| `**` | Match across segments |
+| `!path` | Negate — scan this path even if a prior rule ignored it |
+| `# comment` | Ignored line |
+
+Publish a starter file:
+
+```bash
+php artisan vendor:publish --tag=guard-ignore
+```
 
 ## Severity and CI exit codes
 

@@ -33,8 +33,17 @@ This copies `config/guard.php` where you can:
 - Add or remove rule classes under `rules`
 - Enable or disable rules via `rule_options`
 - Change `paths` and `ignore` (or set `GUARD_PATHS` in `.env`)
+- Add a root `.guardignore` for glob patterns and negation (`vendor:publish --tag=guard-ignore`)
 - Tune `thresholds`, `severity`, and `GUARD_FAIL_ON`
 - Configure `provider_bindings` and `missing_interface_binding` (container-aware interface rule)
+
+### Publish `.guardignore` (optional)
+
+```bash
+php artisan vendor:publish --tag=guard-ignore
+```
+
+Creates `.guardignore` at your project root with common defaults and examples. Edit it to exclude legacy code from scans while keeping config `ignore` for shared prefixes.
 
 ## Requirements
 
