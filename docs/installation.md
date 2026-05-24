@@ -130,7 +130,7 @@ These appear in the same CLI sections and JSON payload as rule output.
 Install a specific release from GitHub:
 
 ```bash
-composer require laravel-guard/laravel-guard:v0.1.4
+composer require laravel-guard/laravel-guard:v0.2.0
 ```
 
 See [releases](https://github.com/zaeem2396/LaraGuard/releases) for changelog notes.
