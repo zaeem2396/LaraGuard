@@ -16,6 +16,7 @@ final class GuardConfig
      * @param  list<string>  $scanRoots
      * @param  list<string>  $noDbControllerExcludePrefixes
      * @param  list<string>  $providerBindingScanPaths
+     * @param  array<string, RuleOption>  $ruleOptions
      */
     public function __construct(
         public array $rules,
@@ -27,6 +28,7 @@ final class GuardConfig
         public array $noDbControllerExcludePrefixes = [],
         public array $providerBindingScanPaths = ['app/Providers'],
         public bool $missingInterfaceBindingStrict = false,
+        public array $ruleOptions = [],
     ) {}
 
     /**
@@ -72,11 +74,80 @@ final class GuardConfig
             thresholds: $thresholds,
             reportFrom: $reportFrom,
             failOn: $failOn,
-            scanRoots: self::normalizedScanRoots($config['paths'] ?? ['app']),
+            scanRoots: self::resolveScanRoots($config['paths'] ?? ['app']),
             noDbControllerExcludePrefixes: self::stringListFrom($noDbConfig['exclude_path_prefixes'] ?? []),
             providerBindingScanPaths: self::normalizedScanRoots($bindingConfig['scan_paths'] ?? ['app/Providers']),
             missingInterfaceBindingStrict: (bool) ($missingInterfaceConfig['strict'] ?? false),
+            ruleOptions: self::parseRuleOptions($config['rule_options'] ?? []),
         );
+    }
+
+    public function isRuleEnabled(string $ruleId): bool
+    {
+        if (! isset($this->ruleOptions[$ruleId])) {
+            return true;
+        }
+
+        return $this->ruleOptions[$ruleId]->enabled;
+    }
+
+    public function ruleOption(string $ruleId): ?RuleOption
+    {
+        return $this->ruleOptions[$ruleId] ?? null;
+    }
+
+    /**
+     * @return array<string, RuleOption>
+     */
+    private static function parseRuleOptions(mixed $value): array
+    {
+        if (! is_array($value)) {
+            return [];
+        }
+
+        $options = [];
+
+        foreach ($value as $ruleId => $raw) {
+            if (! is_string($ruleId) || ! is_array($raw)) {
+                continue;
+            }
+
+            $enabled = array_key_exists('enabled', $raw)
+                ? (bool) $raw['enabled']
+                : true;
+
+            $severity = null;
+            $severityRaw = $raw['severity'] ?? null;
+
+            if (is_string($severityRaw)) {
+                $severity = Severity::tryFrom($severityRaw);
+            }
+
+            $options[$ruleId] = new RuleOption(
+                enabled: $enabled,
+                severity: $severity,
+            );
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function resolveScanRoots(mixed $configured): array
+    {
+        if (is_array($configured) && $configured === []) {
+            throw InvalidGuardConfigurationException::emptyScanPaths();
+        }
+
+        $roots = self::stringListFrom(is_array($configured) ? $configured : ['app']);
+
+        if ($roots === []) {
+            throw InvalidGuardConfigurationException::emptyScanPaths();
+        }
+
+        return $roots;
     }
 
     /**
