@@ -12,7 +12,9 @@ Add a step after Composer install and (optionally) configuration publish:
   run: php artisan guard --fail-on-error
 ```
 
-Guard exits `0` when no violations meet `severity.fail_on` (default: **error**). Controller database usage from `no-db-in-controller` is reported as **error**, so CI fails when that rule triggers.
+Guard exits `0` when no violations meet `severity.fail_on` (default: **error**, overridable via `GUARD_FAIL_ON` in `.env`). Controller database usage from `no-db-in-controller` is reported as **error**, so CI fails when that rule triggers.
+
+Disable rules or tune severities in `config/guard.php` — see [configuration.md](configuration.md).
 
 ## JSON output for tooling
 
