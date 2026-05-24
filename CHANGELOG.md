@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - Unreleased
+
+### Added
+
+- `rule_options` config for per-rule `enabled` flags and optional `severity` overrides (keyed by rule id).
+- `InvalidGuardConfigurationException` when `paths` is empty.
+- Environment variables `GUARD_PATHS` (comma-separated scan roots) and `GUARD_FAIL_ON` (exit threshold).
+- [docs/configuration.md](docs/configuration.md) configuration cookbook.
+
 ## [0.1.4] - 2026-05-23
 
 ### Added

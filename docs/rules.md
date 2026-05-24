@@ -2,7 +2,7 @@
 
 Laravel Guard ships with a small set of AST-based rules. Each rule implements `LaravelGuard\Guard\Contracts\RuleContract` and returns zero or more `Violation` objects per scanned file.
 
-Enable or disable rules by editing the `rules` array in `config/guard.php`.
+Enable or disable rules by editing the `rules` array in `config/guard.php`, or use `rule_options.{rule-id}.enabled` without removing the class. See [configuration.md](configuration.md#rules-and-rule_options).
 
 ## Bundled rules
 

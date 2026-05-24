@@ -42,7 +42,7 @@ Do not run Pint on `tests/fixtures/` (intentionally invalid PHP may exist for pa
 When changing behavior, update:
 
 - [rules.md](rules.md) — rule semantics and limits
-- [installation.md](installation.md) — install and usage
+- [configuration.md](configuration.md) — rule_options, env vars, thresholds
 - [ci.md](ci.md) — pipeline examples
 - [README.md](../README.md) — high-level summary
 - [CHANGELOG.md](../CHANGELOG.md) — user-facing changes
