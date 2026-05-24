@@ -13,13 +13,37 @@ return [
     |--------------------------------------------------------------------------
     |
     | Fully-qualified class names implementing LaravelGuard\Guard\Contracts\RuleContract.
-    | Disabled rules are skipped entirely during analysis.
+    | Use rule_options.{rule-id}.enabled to disable a rule without removing it.
     |
     */
     'rules' => [
         NoDbInControllerRule::class,
         FatClassRule::class,
         MissingInterfaceBindingRule::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Per-rule options
+    |--------------------------------------------------------------------------
+    |
+    | Keyed by rule id (e.g. no-db-in-controller). Set enabled => false to skip
+    | a rule. Optionally override emitted violation severity per rule.
+    |
+    */
+    'rule_options' => [
+        'no-db-in-controller' => [
+            'enabled' => true,
+            'severity' => 'error',
+        ],
+        'fat-class' => [
+            'enabled' => true,
+            'severity' => 'info',
+        ],
+        'missing-interface-binding' => [
+            'enabled' => true,
+            'severity' => 'info',
+        ],
     ],
 
     /*
@@ -102,19 +126,25 @@ return [
     |--------------------------------------------------------------------------
     |
     | error | warning | info — controls grouping in human output and exit logic.
+    | Override with GUARD_FAIL_ON in your .env when published.
     |
     */
     'severity' => [
         'report_from' => 'info',
-        'fail_on' => 'error',
+        'fail_on' => env('GUARD_FAIL_ON', 'error'),
     ],
 
     /*
     |--------------------------------------------------------------------------
     | Scan roots (relative to application base path)
     |--------------------------------------------------------------------------
+    |
+    | Override with comma-separated GUARD_PATHS in your .env when published.
+    | Must contain at least one non-empty path.
+    |
     */
-    'paths' => [
-        'app',
-    ],
+    'paths' => array_values(array_filter(array_map(
+        static fn (string $path): string => trim($path),
+        explode(',', (string) env('GUARD_PATHS', 'app')),
+    ))),
 ];
