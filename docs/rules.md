@@ -11,6 +11,7 @@ Enable or disable rules by editing the `rules` array in `config/guard.php`, or u
 | `no-db-in-controller` | `NoDbInControllerRule` | **error** | Database access inside `Http/Controllers` |
 | `fat-class` | `FatClassRule` | **info** | Classes exceeding method, public-method, or line-span thresholds |
 | `missing-interface-binding` | `MissingInterfaceBindingRule` | **info** | Concrete `App\` types in constructors under Services/Repositories (container-aware) |
+| `layer-violation` | `LayerViolationRule` | **warning** | Cross-layer `use` imports and type hints outside allowed dependencies |
 
 The scanner may also emit diagnostics with rule id `scanner` (e.g. missing scan roots, unparseable PHP files). Those use **warning** severity.
 
@@ -84,6 +85,63 @@ When enabled, emits an **info** violation if the constructor type-hints a concre
     'strict' => true,
 ],
 ```
+
+## `layer-violation`
+
+**Goal:** Keep Laravel layers decoupled — controllers stay thin, services orchestrate, repositories talk to models.
+
+**Detects:**
+
+- `use` imports and type hints in a file that reference a **forbidden inner layer** (based on namespace → layer mapping)
+- Applies to classes under configured layer namespaces (default: Controllers, Services, Repositories, Models)
+
+**Default allowed dependencies:**
+
+| From layer | May depend on |
+| ---------- | ------------- |
+| Controller | Service |
+| Service | Repository, Service |
+| Repository | Model, Repository |
+| Model | Model |
+
+**Configure** layers and allowed edges in `config/guard.php`:
+
+```php
+'layers' => [
+    'order' => ['Controller', 'Service', 'Repository', 'Model'],
+    'namespaces' => [
+        'Controller' => ['App\\Http\\Controllers'],
+        'Service' => ['App\\Services'],
+        'Repository' => ['App\\Repositories'],
+        'Model' => ['App\\Models'],
+    ],
+],
+
+'layer_violation' => [
+    'allowed' => [
+        'Controller' => ['Service'],
+        'Service' => ['Repository', 'Service'],
+        'Repository' => ['Model', 'Repository'],
+        'Model' => ['Model'],
+    ],
+    'allowed_namespace_prefixes' => [
+        'Illuminate\\',
+        'Laravel\\',
+        'App\\Http\\Requests\\',
+    ],
+    'exceptions' => [
+        ['from' => 'Controller', 'to_prefix' => 'App\\Legacy\\'],
+    ],
+],
+```
+
+**Skips:**
+
+- Types outside `App\` application code
+- Framework namespaces (`Illuminate\`, `Laravel\`, etc.) and common support namespaces listed in `allowed_namespace_prefixes`
+- Files that do not map to any configured layer
+
+**CI:** Default severity is **warning**, so `php artisan guard --fail-on-error` does not fail on layer violations unless you lower `GUARD_FAIL_ON` or override severity via `rule_options`.
 
 ## Container binding graph (phase 1)
 
