@@ -51,9 +51,9 @@ return [
     | Ignored paths
     |--------------------------------------------------------------------------
     |
-    | Absolute or project-relative path prefixes skipped by the scanner.
-    | Glob-style patterns can be added in future releases; prefix match is used
-    | by the default scanner for predictable zero-config behavior.
+    | Project-relative path prefixes skipped by the scanner. These merge with
+    | patterns from a root `.guardignore` file (publish with --tag=guard-ignore).
+    | Use glob characters (*, ?, **) and negation (!path) in `.guardignore`.
     |
     */
     'ignore' => [

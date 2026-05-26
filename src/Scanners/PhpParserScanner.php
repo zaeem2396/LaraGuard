@@ -8,6 +8,7 @@ use Illuminate\Contracts\Foundation\Application;
 use LaravelGuard\Guard\Config\GuardConfig;
 use LaravelGuard\Guard\Contracts\ScanCacheContract;
 use LaravelGuard\Guard\Contracts\ScannerContract;
+use LaravelGuard\Guard\Support\Ignore\GuardIgnoreMatcherFactory;
 use LaravelGuard\Guard\Support\ScanFile;
 use LaravelGuard\Guard\Support\ScanOutcome;
 use LaravelGuard\Guard\Violations\Severity;
@@ -31,6 +32,10 @@ final readonly class PhpParserScanner implements ScannerContract
         $parser = (new ParserFactory)->createForHostVersion();
         $files = [];
         $diagnostics = [];
+        $ignoreMatcher = GuardIgnoreMatcherFactory::create(
+            $this->application->basePath(),
+            $this->config,
+        );
 
         foreach ($this->config->scanRoots as $root) {
             $absoluteRoot = $this->application->basePath($root);
@@ -63,7 +68,7 @@ final readonly class PhpParserScanner implements ScannerContract
 
                 $path = $item->getPathname();
 
-                if ($this->shouldIgnore($path)) {
+                if ($ignoreMatcher->shouldIgnore($this->relativeToBase($path))) {
                     continue;
                 }
 
@@ -119,25 +124,12 @@ final readonly class PhpParserScanner implements ScannerContract
         return new ScanOutcome(files: $files, diagnostics: $diagnostics);
     }
 
-    private function shouldIgnore(string $absolutePath): bool
+    private function relativeToBase(string $absolutePath): string
     {
         $normalizedBase = rtrim($this->application->basePath(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         $relative = ltrim(str_replace($normalizedBase, '', $absolutePath), DIRECTORY_SEPARATOR);
 
-        foreach ($this->config->ignorePrefixes as $prefix) {
-            if (str_starts_with($relative, rtrim($prefix, '/').'/') || $relative === rtrim($prefix, '/')) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function relativeToBase(string $absolutePath): string
-    {
-        $normalizedBase = rtrim($this->application->basePath(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-
-        return ltrim(str_replace($normalizedBase, '', $absolutePath), DIRECTORY_SEPARATOR);
+        return str_replace('\\', '/', $relative);
     }
 
     private function cacheKeyFor(string $absolutePath): string
