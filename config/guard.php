@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use LaravelGuard\Guard\Rules\FatClassRule;
+use LaravelGuard\Guard\Rules\LayerViolationRule;
 use LaravelGuard\Guard\Rules\MissingInterfaceBindingRule;
 use LaravelGuard\Guard\Rules\NoDbInControllerRule;
 
@@ -20,6 +21,7 @@ return [
         NoDbInControllerRule::class,
         FatClassRule::class,
         MissingInterfaceBindingRule::class,
+        LayerViolationRule::class,
     ],
 
     /*
@@ -43,6 +45,62 @@ return [
         'missing-interface-binding' => [
             'enabled' => true,
             'severity' => 'info',
+        ],
+        'layer-violation' => [
+            'enabled' => true,
+            'severity' => 'warning',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Layer architecture
+    |--------------------------------------------------------------------------
+    |
+    | Ordered layers (outer → inner). Namespace prefixes map classes to a layer.
+    | layer_violation.allowed lists which inner layers each layer may reference.
+    |
+    */
+    'layers' => [
+        'order' => [
+            'Controller',
+            'Service',
+            'Repository',
+            'Model',
+        ],
+        'namespaces' => [
+            'Controller' => [
+                'App\\Http\\Controllers',
+            ],
+            'Service' => [
+                'App\\Services',
+            ],
+            'Repository' => [
+                'App\\Repositories',
+            ],
+            'Model' => [
+                'App\\Models',
+            ],
+        ],
+    ],
+
+    'layer_violation' => [
+        'allowed' => [
+            'Controller' => ['Service'],
+            'Service' => ['Repository', 'Service'],
+            'Repository' => ['Model', 'Repository'],
+            'Model' => ['Model'],
+        ],
+        'allowed_namespace_prefixes' => [
+            'Illuminate\\',
+            'Laravel\\',
+            'App\\Http\\Requests\\',
+            'App\\Http\\Resources\\',
+            'App\\Enums\\',
+            'App\\Contracts\\',
+        ],
+        'exceptions' => [
+            // ['from' => 'Controller', 'to_prefix' => 'App\\Http\\Requests\\'],
         ],
     ],
 
