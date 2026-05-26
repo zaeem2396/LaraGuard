@@ -18,6 +18,8 @@ Disable rules or tune severities in `config/guard.php` — see [configuration.md
 
 Exclude legacy trees from scans with a root `.guardignore` file (`vendor:publish --tag=guard-ignore`). Patterns merge with config `ignore` — see [configuration.md](configuration.md#ignored-paths).
 
+The **layer-violation** rule defaults to **warning** severity, so it does not fail `--fail-on-error` unless you override `rule_options` or `GUARD_FAIL_ON` — see [rules.md](rules.md#layer-violation).
+
 ## JSON output for tooling
 
 ```yaml

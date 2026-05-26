@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-05-26
+
 ### Added
 
 - **layer-violation** rule — detects cross-layer `use` imports and type hints using configurable layer order and namespace mapping.
@@ -110,9 +112,10 @@ First public release: architectural linting for Laravel via `php artisan guard`.
 
 ### Known limitations
 
-- No SARIF output, baselines, or layer rules (planned for later releases).
+- No SARIF output or baselines (planned for later releases).
 - Install from VCS until Packagist publication (see [installation](docs/installation.md)).
 
+[0.2.2]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.2.2
 [0.2.1]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.2.1
 [0.2.0]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.2.0
 [0.1.4]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.1.4
