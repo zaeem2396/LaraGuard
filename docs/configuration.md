@@ -15,6 +15,8 @@ Laravel Guard reads `config/guard.php` (merged automatically; publish with `vend
 | `no_db_in_controller` | Controller path excludes for DB rule |
 | `provider_bindings` | Provider paths for container binding scan |
 | `missing_interface_binding` | Strict mode for interface rule |
+| `layers` | Ordered layer names and namespace → layer mapping |
+| `layer_violation` | Allowed cross-layer dependencies and exceptions |
 
 ## Rules and `rule_options`
 
@@ -157,6 +159,33 @@ See [rules.md](rules.md) for behavior. Config keys:
 - `no_db_in_controller.exclude_path_prefixes`
 - `provider_bindings.scan_paths`
 - `missing_interface_binding.strict`
+- `layers.order`, `layers.namespaces`
+- `layer_violation.allowed`, `layer_violation.allowed_namespace_prefixes`, `layer_violation.exceptions`
+
+### Layer architecture example
+
+```php
+'layers' => [
+    'order' => ['Controller', 'Service', 'Repository', 'Model'],
+    'namespaces' => [
+        'Controller' => ['App\\Http\\Controllers'],
+        'Service' => ['App\\Services'],
+        'Repository' => ['App\\Repositories'],
+        'Model' => ['App\\Models'],
+    ],
+],
+
+'layer_violation' => [
+    'allowed' => [
+        'Controller' => ['Service'],
+        'Service' => ['Repository', 'Service'],
+        'Repository' => ['Model', 'Repository'],
+        'Model' => ['Model'],
+    ],
+],
+```
+
+Set `layers.order` to an empty array to disable layer analysis (the rule becomes a no-op).
 
 ## Related docs
 

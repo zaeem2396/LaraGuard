@@ -29,6 +29,7 @@ final class GuardConfig
         public array $providerBindingScanPaths = ['app/Providers'],
         public bool $missingInterfaceBindingStrict = false,
         public array $ruleOptions = [],
+        public ?LayerArchitectureConfig $layerArchitecture = null,
     ) {}
 
     /**
@@ -79,6 +80,7 @@ final class GuardConfig
             providerBindingScanPaths: self::normalizedScanRoots($bindingConfig['scan_paths'] ?? ['app/Providers']),
             missingInterfaceBindingStrict: (bool) ($missingInterfaceConfig['strict'] ?? false),
             ruleOptions: self::parseRuleOptions($config['rule_options'] ?? []),
+            layerArchitecture: LayerArchitectureConfig::fromGuardConfig($config),
         );
     }
 

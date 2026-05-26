@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **layer-violation** rule — detects cross-layer `use` imports and type hints using configurable layer order and namespace mapping.
+- `layers` and `layer_violation` config for allowed dependencies, framework prefixes, and per-layer exceptions.
+- `LayerResolver`, `LayerDependencyPolicy`, and `ReferencedTypeCollector` AST helpers.
+
 ## [0.2.1] - 2026-05-26
 
 ### Added
