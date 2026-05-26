@@ -139,11 +139,11 @@ These appear in the same CLI sections and JSON payload as rule output.
 Install a specific release from GitHub:
 
 ```bash
-composer require laravel-guard/laravel-guard:v0.2.0
+composer require laravel-guard/laravel-guard:v0.2.1
 ```
 
 See [releases](https://github.com/zaeem2396/LaraGuard/releases) for changelog notes.
 
 ## Roadmap
 
-Future releases may add baselines, SARIF, `.guardignore`, layer rules, and persistent scan caching. See project issues for status.
+Future releases may add baselines, SARIF, layer rules, and persistent scan caching. See project issues for status.
