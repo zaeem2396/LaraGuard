@@ -219,8 +219,10 @@ Example: with defaults (`report_from: info`, `fail_on: error`), only **error** v
 
 ## Custom rules
 
-1. Implement `RuleContract` (method `id(): string`, `evaluate(ScanFile $file): array`).
-2. Register the class FQCN in `config/guard.php` under `rules`.
-3. Use the container for dependencies (e.g. `GuardConfig`) in the rule constructor.
+Register rules in config **or** at runtime:
 
-See [installation.md](installation.md#custom-rules) for a minimal example.
+1. Implement `RuleContract` (or extend `AbstractRule` for convention-based ids).
+2. Add the FQCN to `config/guard.php` `rules`, **or** call `Guard::extend()` from a service provider.
+3. Use the container for dependencies in the rule constructor.
+
+Full guide with a sample package: [extending-rules.md](extending-rules.md).

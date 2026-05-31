@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Guard::extend()` facade API to register third-party rule classes at runtime.
+- `Guard::booting()` callbacks for package service providers (invoked after application boot).
+- `RuleExtensionRegistry`, `RuleRegistryFactory`, and `GuardManager` for merged config + runtime rules.
+- `AbstractRule` base class and `RuleIdConvention` for kebab-case rule ids from class names.
+- [docs/extending-rules.md](docs/extending-rules.md) with a `laravel-guard-acme` example package.
+
 ## [0.2.2] - 2026-05-26
 
 ### Added

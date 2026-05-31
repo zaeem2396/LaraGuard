@@ -55,6 +55,8 @@ Toggle or tune each rule by **rule id** under `rule_options`:
 
 Omitted rules default to **enabled** with the rule’s built-in severity.
 
+Runtime registration via `Guard::extend()` is merged with config `rules`. See [extending-rules.md](extending-rules.md).
+
 ## Scan paths
 
 ```php
@@ -191,4 +193,5 @@ Set `layers.order` to an empty array to disable layer analysis (the rule becomes
 
 - [installation.md](installation.md) — install and publish
 - [rules.md](rules.md) — rule semantics and JSON output
+- [extending-rules.md](extending-rules.md) — custom and third-party rules
 - [ci.md](ci.md) — pipeline examples

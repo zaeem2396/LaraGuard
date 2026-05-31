@@ -95,33 +95,13 @@ Each violation includes `severity`, `file`, `line`, `message`, `suggestion`, and
 
 ## Custom rules
 
-1. Create a class implementing `LaravelGuard\Guard\Contracts\RuleContract`.
-2. Add its FQCN to `rules` in `config/guard.php`.
+Register rules in `config/guard.php` **or** at runtime with `Guard::extend()` from a service provider.
+
+1. Create a class implementing `RuleContract` (or extend `AbstractRule` for automatic rule ids).
+2. Add its FQCN to `rules` in config, **or** call `Guard::extend(MyRule::class)` in `AppServiceProvider::boot()`.
 3. Inject dependencies via the constructor (resolved by the container).
 
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Guard\Rules;
-
-use LaravelGuard\Guard\Contracts\RuleContract;
-use LaravelGuard\Guard\Support\ScanFile;
-
-final readonly class MyRule implements RuleContract
-{
-    public function id(): string
-    {
-        return 'my-rule';
-    }
-
-    public function evaluate(ScanFile $file): array
-    {
-        return [];
-    }
-}
-```
+See [extending-rules.md](extending-rules.md) for runtime registration, `Guard::booting()`, and a sample package layout.
 
 Rule behavior and bundled rules: [rules.md](rules.md).
 

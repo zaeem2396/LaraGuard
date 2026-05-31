@@ -13,7 +13,7 @@
 - **Zero-config by default** — scans `app/` with sensible ignores after install; optional `.guardignore` for globs and negation
 - **Bundled rules** for controllers, class size, layer boundaries, and container-aware constructor bindings
 - **CI friendly** — JSON output and non-zero exits via `--fail-on-error`
-- **Extensible** — implement `RuleContract` and register classes in config
+- **Extensible** — `Guard::extend()` for runtime rule registration; see [docs/extending-rules.md](docs/extending-rules.md)
 - **Future-proof seams** for caching, SARIF, baselines, and dependency graphs
 
 ## Requirements
