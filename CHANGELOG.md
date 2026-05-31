@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-05-31
+
 ### Added
 
 - `Guard::extend()` facade API to register third-party rule classes at runtime.
@@ -123,6 +125,7 @@ First public release: architectural linting for Laravel via `php artisan guard`.
 - No SARIF output or baselines (planned for later releases).
 - Install from VCS until Packagist publication (see [installation](docs/installation.md)).
 
+[0.2.3]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.2.3
 [0.2.2]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.2.2
 [0.2.1]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.2.1
 [0.2.0]: https://github.com/zaeem2396/LaraGuard/releases/tag/v0.2.0
