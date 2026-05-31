@@ -43,7 +43,10 @@
         "laravel": {
             "providers": [
                 "LaravelGuard\\Guard\\GuardServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Guard": "LaravelGuard\\Guard\\Facades\\Guard"
+            }
         }
     },
     "config": {

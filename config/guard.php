@@ -14,6 +14,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Fully-qualified class names implementing LaravelGuard\Guard\Contracts\RuleContract.
+    | Register additional rules at runtime with Guard::extend() — see docs/extending-rules.md.
     | Use rule_options.{rule-id}.enabled to disable a rule without removing it.
     |
     */

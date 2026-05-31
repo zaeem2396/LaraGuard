@@ -9,7 +9,6 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LaravelGuard\Guard\Config\GuardConfig;
 use LaravelGuard\Guard\Console\GuardCommand;
-use LaravelGuard\Guard\Contracts\RuleContract;
 use LaravelGuard\Guard\Contracts\ScanCacheContract;
 use LaravelGuard\Guard\Contracts\ScannerContract;
 use LaravelGuard\Guard\Scanners\PhpParserScanner;
@@ -17,7 +16,9 @@ use LaravelGuard\Guard\Scanners\ServiceProviderBindingScanner;
 use LaravelGuard\Guard\Support\ContainerBindingMap;
 use LaravelGuard\Guard\Support\GuardAnalysisEngine;
 use LaravelGuard\Guard\Support\NullScanCache;
+use LaravelGuard\Guard\Support\RuleExtensionRegistry;
 use LaravelGuard\Guard\Support\RuleRegistry;
+use LaravelGuard\Guard\Support\RuleRegistryFactory;
 
 final class GuardServiceProvider extends ServiceProvider
 {
@@ -44,23 +45,12 @@ final class GuardServiceProvider extends ServiceProvider
 
         $this->app->singleton(ServiceProviderBindingScanner::class);
 
+        $this->app->singleton(GuardManager::class);
+
+        $this->app->singleton(RuleExtensionRegistry::class);
+
         $this->app->singleton(RuleRegistry::class, function (Application $app): RuleRegistry {
-            $registry = new RuleRegistry;
-
-            foreach ($app->make(GuardConfig::class)->rules as $ruleClass) {
-                $rule = $app->make($ruleClass);
-                if (! $rule instanceof RuleContract) {
-                    continue;
-                }
-
-                if (! $app->make(GuardConfig::class)->isRuleEnabled($rule->id())) {
-                    continue;
-                }
-
-                $registry->register($rule);
-            }
-
-            return $registry;
+            return RuleRegistryFactory::create($app);
         });
 
         $this->app->singleton(GuardAnalysisEngine::class, function (Application $app): GuardAnalysisEngine {
@@ -81,6 +71,10 @@ final class GuardServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->app->booted(function (): void {
+            $this->app->make(GuardManager::class)->invokeBootCallbacks();
+        });
+
         if (! $this->app->runningInConsole()) {
             return;
         }
