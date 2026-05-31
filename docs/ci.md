@@ -20,6 +20,8 @@ Exclude legacy trees from scans with a root `.guardignore` file (`vendor:publish
 
 The **layer-violation** rule defaults to **warning** severity, so it does not fail `--fail-on-error` unless you override `rule_options` or `GUARD_FAIL_ON` — see [rules.md](rules.md#layer-violation).
 
+Register custom rules from service providers with `Guard::extend()` — see [extending-rules.md](extending-rules.md).
+
 ## JSON output for tooling
 
 ```yaml
